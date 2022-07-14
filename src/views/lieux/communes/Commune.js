@@ -36,8 +36,9 @@ const Commune = () => {
   };
   const handleUpdate = (item) => {
     setUpdate(true);
+    console.log(item);
     setNom(item.nom);
-    setId(item._id);
+    setId(item.id);
     setRegion(context.state.departements.filter(i => i._id === item.departement)[0].region);
     setDepartement(item.departement);
   };
@@ -187,7 +188,7 @@ const Commune = () => {
                                 <CDropdownToggle color="secondary">Actions</CDropdownToggle>
                                 <CDropdownMenu>
                                   <CDropdownItem
-                                    onClick={() => context.deleteCommune(item._id)}>Supprimer</CDropdownItem>
+                                    onClick={() => context.deleteCommune(item.id)}>Supprimer</CDropdownItem>
                                   <CDropdownItem
                                     onClick={() => handleUpdate(item)}>Modifier</CDropdownItem>
                                 </CDropdownMenu>

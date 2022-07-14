@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 
 import {
   CAvatar,
@@ -53,9 +53,13 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
+import useToken from "../../utils/UseToken";
+import {useNavigate} from "react-router-dom";
 
 const Dashboard = () => {
-  const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+  const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+  const {token,setToken} = useToken();
+  const navigate = useNavigate();
 
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
@@ -177,6 +181,14 @@ const Dashboard = () => {
       activity: 'Last week',
     },
   ]
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/login',{replace:true});
+    }
+  }, [token]);
+
+
 
   return (
     <>

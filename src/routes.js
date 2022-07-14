@@ -2,6 +2,8 @@ import React from 'react'
 import Demandeur from "./views/electeurs/demandeur/Demandeur";
 import Electeur from "./views/electeurs/electeur/Electeur";
 import BureauVote from "./views/bureau/BureauVote";
+import Candidat from "./views/Candidats/Candidat";
+import Users from "./views/users/Users";
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
 const Lieux = React.lazy(() => import('./views/lieux/Lieux'));
@@ -61,6 +63,8 @@ const routes = [
   { path: '/electeur', name: 'Electeur', element: Electeur },
   { path: '/demandeur', name: 'Demandeur', element: Demandeur },
   { path: '/bureau/vote', name: 'Bureau de vote', element: BureauVote },
+  { path: '/candidat', name: 'Candidat', element: Candidat },
+  { path: '/users', name: 'Utilisateurs', element: Users },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

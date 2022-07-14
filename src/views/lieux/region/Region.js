@@ -34,7 +34,7 @@ const Region = () => {
   const handleUpdate = (item) => {
     setUpdate(true);
     setNom(item.nom);
-    setId(item._id);
+    setId(item.id);
   };
 
   const columns = [
@@ -132,7 +132,7 @@ const Region = () => {
                                 <CDropdownToggle color="secondary">Actions</CDropdownToggle>
                                 <CDropdownMenu>
                                   <CDropdownItem
-                                    onClick={() => context.deleteRegion(item._id)}>Supprimer</CDropdownItem>
+                                    onClick={() => context.deleteRegion(item.id)}>Supprimer</CDropdownItem>
                                   <CDropdownItem
                                     onClick={() => handleUpdate(item)}>Modifier</CDropdownItem>
                                 </CDropdownMenu>

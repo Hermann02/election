@@ -14,27 +14,22 @@ import {
 } from '@coreui/react'
 import {GlobalContext} from "../../services/Global";
 import {CSmartTable} from "@coreui/react-pro";
-import useToken from "../../utils/UseToken";
 
 
-const Candidat = () => {
+const Users = () => {
   const [validated, setValidated] = useState(false);
   const [nom, setNom] = useState('');
   const [prenom, setPrenom] = useState('');
-  const [profession, setProfession] = useState('');
-  const [sexe, setSexe] = useState('');
-  const [commune, setCommune] = useState('');
-  const [lieu, setLieu] = useState('');
-  const [date, setDate] = useState('');
-  const [dossier, setDossier] = useState('');
-  const [ordre, setOrdre] = useState(0);
   const [departement, setDepartement] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmedPassword, setConfirmedPassword] = useState('');
   const [region, setRegion] = useState('');
   const [id, setId] = useState('');
-  const [statut, setStatut] = useState(false);
+  const [userType, setUserType] = useState('');
   const [update, setUpdate] = useState(null);
   const context = useContext(GlobalContext);
-  const {token,setToken} = useToken();
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -43,25 +38,27 @@ const Candidat = () => {
     }
     setValidated(true)
   };
+
   const handleUpdate = (item) => {
     setUpdate(true);
+    console.log(item);
     setNom(item.nom);
     setPrenom(item.prenom);
+    setEmail(item.email);
+    setPassword(item.password);
+    setConfirmedPassword(item.password);
+    setUserType(item.userType);
+    setPhone(item.phone);
     setId(item.id);
-    console.log(item)
-    setStatut(item.statut);
-    setProfession(item.profession);
-    setLieu(item.lieu);
-    setDate(item.date);
-    setOrdre(item.ordre);
-    setCommune(item.commune);
-    setSexe(item.sexe);
-    setDossier(item.dossier);
+    setRegion(context.state.departements.filter(i => i._id === item.departement)[0]?.region);
+    setDepartement(item.departement);
   };
-
+  const getRegion = (item) => {
+    return context.state.departements.filter(i => i._id === item)[0].region;
+  };
   const columns = [
     {
-      key: 'ordre',
+      key: '_id',
       label: '#',
       filter: false,
       sorter: false,
@@ -82,29 +79,22 @@ const Candidat = () => {
       _style: {width: '50%'},
     },
     {
-      key: 'sexe',
-      label: 'sexe',
+      key: 'email',
+      label: 'email',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
     },
     {
-      key: 'date',
-      label: 'Né le',
+      key: 'phone',
+      label: 'telephone',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
     },
     {
-      key: 'lieu',
-      label: 'A',
-      filter: false,
-      sorter: false,
-      _style: {width: '50%'},
-    },
-    {
-      key: 'profession',
-      label: 'profession',
+      key: 'userType',
+      label: 'Type',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
@@ -128,7 +118,7 @@ const Candidat = () => {
 
                 <CCard>
                   <CCardHeader>
-                    <h3>Candidats</h3>
+                    <h3>Utilisateurs</h3>
                   </CCardHeader>
                   <CCardBody>
                     <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
@@ -136,7 +126,8 @@ const Candidat = () => {
                       <CRow>
                         <CCol md={4} className="position-relative">
                           <CFormLabel htmlFor="validationTooltip04">Region</CFormLabel>
-                          <CFormSelect id="validationTooltip04" value={region} onChange={(e) => setRegion(e.target.value)}
+                          <CFormSelect id="validationTooltip04" value={region}
+                                       onChange={(e) => setRegion(e.target.value)}
                                        required>
                             <option disabled defaultValue="">
                               Choisissez...
@@ -168,22 +159,21 @@ const Candidat = () => {
                             Veuillez selectionner le département.
                           </CFormFeedback>
                         </CCol>
-                        <CCol md={4} className="position-relative">
-                          <CFormLabel htmlFor="validationTooltip04">Commune</CFormLabel>
-                          <CFormSelect id="validationTooltip04" value={commune}
-                                       onChange={(e) => setCommune(e.target.value)} required>
-                            <option disabled defaultValue="">
-                              Choisissez...
-                            </option>
-                            <option>...</option>
-                            {context.state.communes.filter(i => i.departement === departement).map(item =>
-                              <option value={item._id}>{item.nom}</option>
-                            )}
 
-                          </CFormSelect>
-                          <CFormFeedback tooltip invalid>
-                            Veuillez selectionner la commune du candidat.
-                          </CFormFeedback>
+                        <CCol md={4}>
+                          <CFormLabel htmlFor="validationDefaultUsername">Email</CFormLabel>
+                          <CInputGroup className="has-validation">
+                            <CFormInput
+                              type="email"
+                              id="validationDefaultEmail"
+                              defaultValue=""
+                              aria-describedby="inputGroupPrepend02"
+                              required
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <CFormFeedback invalid>Veuillez entrer l'email .</CFormFeedback>
+                          </CInputGroup>
                         </CCol>
                       </CRow>
                       <CRow>
@@ -199,7 +189,7 @@ const Candidat = () => {
                               value={nom}
                               onChange={(e) => setNom(e.target.value)}
                             />
-                            <CFormFeedback invalid>Veuillez entrer le nom du candidat.</CFormFeedback>
+                            <CFormFeedback invalid>Veuillez entrer le nom .</CFormFeedback>
                           </CInputGroup>
                         </CCol>
 
@@ -215,48 +205,12 @@ const Candidat = () => {
                               value={prenom}
                               onChange={(e) => setPrenom(e.target.value)}
                             />
-                            <CFormFeedback invalid>Veuillez entrer le prenom du candidat.</CFormFeedback>
-                          </CInputGroup>
-                        </CCol>
-
-                        <CCol md={4} className="position-relative">
-                          <CFormLabel htmlFor="validationTooltip04">Sexe</CFormLabel>
-                          <CFormSelect id="validationTooltip04" value={sexe}
-                                       onChange={(e) => setSexe(e.target.value)} required>
-                            <option disabled defaultValue="">
-                              Choisissez...
-                            </option>
-                            <option>...</option>
-                            <option value="Feminin">Feminin</option>
-                            <option value="Masculin">Masculin</option>
-
-                          </CFormSelect>
-                          <CFormFeedback tooltip invalid>
-                            Veuillez selectionner le sexe du candidat.
-                          </CFormFeedback>
-                        </CCol>
-                      </CRow>
-
-                      <CRow>
-
-                        <CCol md={4}>
-                          <CFormLabel htmlFor="validationDefaultUsername">Date de naissance</CFormLabel>
-                          <CInputGroup className="has-validation">
-                            <CFormInput
-                              type="date"
-                              id="validationDefaultUsername"
-                              defaultValue=""
-                              aria-describedby="inputGroupPrepend02"
-                              required
-                              value={date}
-                              onChange={(e) => setDate(e.target.value)}
-                            />
-                            <CFormFeedback invalid>Veuillez selectionner la date de naissance du candidat.</CFormFeedback>
+                            <CFormFeedback invalid>Veuillez entrer le prenom .</CFormFeedback>
                           </CInputGroup>
                         </CCol>
 
                         <CCol md={4}>
-                          <CFormLabel htmlFor="validationDefaultUsername">Lieu de naissance</CFormLabel>
+                          <CFormLabel htmlFor="validationDefaultUsername">Telephone</CFormLabel>
                           <CInputGroup className="has-validation">
                             <CFormInput
                               type="text"
@@ -264,66 +218,83 @@ const Candidat = () => {
                               defaultValue=""
                               aria-describedby="inputGroupPrepend02"
                               required
-                              value={lieu}
-                              onChange={(e) => setLieu(e.target.value)}
+                              value={phone}
+                              onChange={(e) => setPhone(e.target.value)}
                             />
-                            <CFormFeedback invalid>Veuillez entrer le lieu de naissance  du candidat.</CFormFeedback>
+                            <CFormFeedback invalid>Veuillez entrer le numéro de télephone.</CFormFeedback>
                           </CInputGroup>
                         </CCol>
+                      </CRow>
+
+                      <CRow>
 
                         <CCol md={4}>
-                          <CFormLabel htmlFor="validationDefaultUsername">Ordre sur la liste</CFormLabel>
+                          <CFormLabel htmlFor="validationDefaultUsername">Mot de passe</CFormLabel>
                           <CInputGroup className="has-validation">
                             <CFormInput
-                              type="number"
+                              type="password"
                               id="validationDefaultUsername"
                               defaultValue=""
                               aria-describedby="inputGroupPrepend02"
                               required
-                              value={ordre}
-                              onChange={(e) => setOrdre(e.target.value)}
+                              onChange={(e) => setPassword(e.target.value)}
                             />
-                            <CFormFeedback invalid>Veuillez entrer l'ordre du candidat sur la liste.</CFormFeedback>
+                            <CFormFeedback invalid>Veuillez entrer le mot de passe.</CFormFeedback>
                           </CInputGroup>
                         </CCol>
-                      </CRow>
-                      <CCol md={4}>
-                        <CFormLabel htmlFor="validationDefaultUsername">Profession</CFormLabel>
-                        <CInputGroup className="has-validation">
-                          <CFormInput
-                            type="text"
-                            id="validationDefaultUsername"
-                            defaultValue=""
-                            aria-describedby="inputGroupPrepend02"
-                            required
-                            value={profession}
-                            onChange={(e) => setProfession(e.target.value)}
-                          />
-                          <CFormFeedback invalid>Veuillez entrer la profession du candidat.</CFormFeedback>
-                        </CInputGroup>
-                      </CCol>
 
-                      <CCol md={4}>
-                        <div className="mb-3">
-                          <CFormLabel  htmlFor="formFileSm">Dossier</CFormLabel>
-                          <CFormInput type="file"  size="sm" id="formFileSm" onChange={e=>setDossier(e.target.value)} />
-                        </div>
-                      </CCol>
-                      <CRow>
+                        <CCol md={4}>
+                          <CFormLabel htmlFor="validationDefaultUsername">Confirmer le mot de passe</CFormLabel>
+                          <CInputGroup className="has-validation">
+                            <CFormInput
+                              type="password"
+                              id="validationDefaultUsername"
+                              defaultValue=""
+                              aria-describedby="inputGroupPrepend02"
+                              required
+                              onChange={(e) => setConfirmedPassword(e.target.value)}
+                            />
+                            <CFormFeedback invalid>Veuillez entrer à nouveau le mot de passe.</CFormFeedback>
+                          </CInputGroup>
+                        </CCol>
 
-
+                        <CCol md={4}>
+                          <CFormLabel htmlFor="validationTooltip04">Type</CFormLabel>
+                          <CFormSelect id="validationTooltip04" value={userType}
+                                       onChange={(e) => setUserType(e.target.value)} required>
+                            <option disabled defaultValue="">
+                              Choisissez...
+                            </option>
+                            <option>...</option>
+                            <option value="CD">Chef de departement</option>
+                            <option value="CE">Conseiller electoral</option>
+                            <option value="MD">Mandataire</option>
+                          </CFormSelect>
+                          <CFormFeedback tooltip invalid>
+                            Veuillez selectionner le type d'utilisateur.
+                          </CFormFeedback>
+                        </CCol>
                       </CRow>
 
                       <CCol xs={4}>{
                         update ?
                           <CButton color="primary" type="submit" onClick={() => {
                             setUpdate(false);
-                            context.updateCandidat({commune,prenom,profession,ordre,nom,date,lieu,sexe,dossier,statut,id})
+                            context.updateUser({id,nom, prenom, email, phone, departement, userType, confirmedPassword, password})
                           }}>
                             Modifier
                           </CButton>
                           :
-                          <CButton color="primary" type="submit" onClick={() => context.createCandidat({commune,prenom,profession,ordre,nom,date,lieu,sexe,dossier,token})}>
+                          <CButton color="primary" type="submit" onClick={() => context.addUser({
+                            departement,
+                            prenom,
+                            confirmedPassword,
+                            password,
+                            nom,
+                            email,
+                            phone,
+                            userType,
+                          })}>
                             Ajouter
                           </CButton>
                       }
@@ -339,15 +310,13 @@ const Candidat = () => {
                       columns={columns}
                       columnFilter
                       columnSorter
-                      items={context.state.candidats}
+                      items={context.state.users}
                       itemsPerPageSelect
                       itemsPerPage={5}
                       pagination
                       scopedColumns={{
-                        numero: (item) => (
-                          <td>
-                            {item.ordre}
-                          </td>
+                        _id: (item) => (
+                          <td>{item._id + 1}</td>
                         ),
                         actions: (item) => {
                           return (
@@ -355,10 +324,8 @@ const Candidat = () => {
                               <CDropdown>
                                 <CDropdownToggle color="secondary">Actions</CDropdownToggle>
                                 <CDropdownMenu>
-                                  <CDropdownItem
-                                    onClick={() => context.deleteCandidat(item.id)}>Supprimer</CDropdownItem>
-                                  <CDropdownItem
-                                    onClick={() => handleUpdate(item)}>Modifier</CDropdownItem>
+                                  <CDropdownItem onClick={() => context.deleteUser(item.id)}>Supprimer</CDropdownItem>
+                                  <CDropdownItem onClick={() => handleUpdate(item)}>Modifier</CDropdownItem>
                                 </CDropdownMenu>
                               </CDropdown>
                             </td>
@@ -380,6 +347,6 @@ const Candidat = () => {
       }
     </GlobalContext.Consumer>
   )
-}
+};
 
-export default Candidat;
+export default Users;

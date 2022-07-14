@@ -15,6 +15,33 @@ export default class StaticService extends DataService {
     return this.post('/communes/create', {departement, nom});
   }
 
+  createCandidat({commune, token, prenom, profession, ordre, nom, dossier, sexe, date, lieu}) {
+    return this.post('/candidats/create', {commune, prenom, profession, ordre, nom, dossier, sexe, date, lieu}, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  }
+
+  chargerDemandeur({code, type, nom, prenom, sexe, telephone, profession, dateNaissance, pere, mere, dateInscription, commune, status,}) {
+    return this.post('/demandeur/create', {
+      code,
+      nom,
+      prenom,
+      sexe,
+      telephone,
+      profession,
+      dateNaissance,
+      pere,
+      mere,
+      type,
+      dateInscription,
+      commune,
+      status,
+    });
+  }
+
+
   updateRegion({nom, id}) {
     return this.post('/regions/' + id + '/update', {nom});
   }
@@ -27,6 +54,31 @@ export default class StaticService extends DataService {
     return this.post('/communes/' + id + '/update', {departement, nom});
   }
 
+  updateUser({nom, prenom, email, phone, departement, userType, id}) {
+    return this.post('/users/' + id + '/update', {
+      nom,
+      prenom,
+      email,
+      phone,
+      departement,
+      userType,
+    });
+  }
+
+  updateCandidat({commune, prenom, profession, ordre, nom, dossier, sexe, date, lieu, statut, id}) {
+    return this.post('/candidats/' + id + '/update', {
+      commune,
+      prenom,
+      profession,
+      ordre,
+      nom,
+      dossier,
+      statut,
+      sexe,
+      date,
+      lieu
+    });
+  }
 
   getRegions() {
     return this.get('/regions/list', {})
@@ -38,6 +90,10 @@ export default class StaticService extends DataService {
 
   getCommunes() {
     return this.get('/communes/list', {})
+  }
+
+  getCandidats() {
+    return this.get('/candidats/list', {})
   }
 
   getDemandeur() {
@@ -55,6 +111,49 @@ export default class StaticService extends DataService {
 
   deleteCommune(id) {
     return this.get('/communes/' + id + '/delete', {})
+  }
+
+  deleteCandiat(id) {
+    return this.get('/candidats/' + id + '/delete', {})
+  }
+
+  deleteDemandeur(id) {
+    return this.get('/demandeur/' + id + '/delete', {})
+  }
+
+  deleteUser(id) {
+    return this.get('/users/' + id + '/delete', {})
+  }
+
+
+  signup({nom, prenom, email, phone, departement, userType, confirmedPassword, password}) {
+    return this.post('/users/signup', {
+      nom,
+      prenom,
+      email,
+      phone,
+      departement,
+      userType,
+      confirmedPassword,
+      password
+    }, {})
+  }
+
+  signin({email, password}) {
+    return this.post('/users/signin', {email, password}, {})
+  }
+
+
+  logout(token) {
+    return this.post('/users/signout', {}, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+  }
+
+  getUsers() {
+    return this.get('/users/list', {});
   }
 
 

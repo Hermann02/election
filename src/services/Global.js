@@ -10,6 +10,11 @@ class Global extends React.Component {
     regions: [],
     departements: [],
     communes: [],
+    candidats: [],
+    demandeurs: [],
+    file: [],
+    users: [],
+    user: [],
     json: [],
     _id: "",
   };
@@ -48,6 +53,76 @@ class Global extends React.Component {
       console.error(err);
     });
   };
+
+  createCandidat = ({token,commune, prenom, profession, ordre, nom, dossier, sexe, date, lieu}) => {
+    // console.log(nom, departement);
+    new StaticService().createCandidat({
+      commune,
+      token,
+      prenom,
+      profession,
+      ordre,
+      nom,
+      dossier,
+      sexe,
+      date,
+      lieu
+    }).then(res => {
+      if (res.data.success === true) {
+        this.getCandidat();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  createDemandeur = ({file,type, commune, status}) => {
+    // console.log(nom, departement);
+      this.readUploadFile(file);
+    if (file) {
+
+      console.log('hum')
+      console.log('state',this.state.json);
+      const propertiesArray = ['code', 'nom', 'prenom', 'sexe', 'telephone', 'profession', 'dateNaissance', 'pere', 'mere', 'dateInscription', 'commune'];
+      this.state.json.forEach((item) => {
+        console.log(Object.keys(item).toString().toLowerCase());
+        for (const prop of Object.keys(item)) {
+          if (propertiesArray.includes(prop.toLowerCase())) {
+            this.state.communes.forEach((i) => {
+              console.log('com', i.nom === item.commune);
+              if (i.nom === item.commune) {
+                new StaticService().chargerDemandeur({
+                  code: item.code,
+                  nom: item.nom,
+                  prenom: item.prenom,
+                  sexe: item.sexe,
+                  telephone: item.telephone,
+                  profession: item.profession,
+                  dateNaissance: item.dateNaissance,
+                  pere: item.pere,
+                  mere: item.mere,
+                  dateInscription: item.dateInscription,
+                  commune,
+                  type,
+                  status,
+                }).then(res => {
+                  if (res.data.success === true) {
+                    this.getDemandeur();
+                  }
+                }, err => {
+                  console.error(err);
+                });
+              }
+            })
+          }else {
+            console.log('error')
+          }
+        }
+      })
+    }
+
+  };
+
 
   create = ({file}) => {
 
@@ -128,6 +203,43 @@ class Global extends React.Component {
     });
   };
 
+  getCandidat = () => {
+    new StaticService().getCandidats().then(res => {
+      console.log("candidats", res.data);
+      if (res.data.success === true) {
+        this.setState({candidats: res.data.data});
+      }
+    }, err => {
+      console.error(err);
+      this.setState({candidats: []});
+    });
+  };
+
+  getDemandeur = () => {
+    new StaticService().getDemandeur().then(res => {
+      console.log("demandeurs", res.data);
+      if (res.data.success === true) {
+        this.setState({demandeurs: res.data.data});
+      }
+    }, err => {
+      console.error(err);
+      this.setState({demandeur: []});
+    });
+  };
+
+
+  getUsers = () => {
+    new StaticService().getUsers().then(res => {
+      console.log("users", res.data);
+      if (res.data.success === true) {
+        this.setState({users: res.data.data});
+      }
+    }, err => {
+      console.error(err);
+      this.setState({users: []});
+    });
+  };
+
 
   deleteRegion = (id) => {
     new StaticService().deleteRegion(id).then(res => {
@@ -158,6 +270,66 @@ class Global extends React.Component {
     }, err => {
       console.error(err);
     });
+  };
+
+  deleteCandiat = (id) => {
+    new StaticService().deleteCandiat(id).then(res => {
+      if (res.data.success === true) {
+        this.getCandidat();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  deleteDemandeur = (id) => {
+    new StaticService().deleteDemandeur(id).then(res => {
+      if (res.data.success === true) {
+        this.getDemandeur();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  deleteUser = (id) => {
+    new StaticService().deleteUser(id).then(res => {
+      if (res.data.success === true) {
+        this.getUsers();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+
+  signup = ({nom, prenom, email, phone, departement, userType, confirmedPassword, password}) => {
+    return new StaticService().signup({
+      nom,
+      prenom,
+      email,
+      phone,
+      departement,
+      userType,
+      confirmedPassword,
+      password
+    }).then(res => {
+      if (res.data.success === true) {
+        this.getUsers();
+      }
+    }, err => {
+      console.error(err);
+    });
+    ;
+  };
+
+  signin = ({email, password}) => {
+    return new StaticService().signin({email, password});
+  };
+
+
+  logout = (token) => {
+    return new StaticService().logout(token);
   };
 
 
@@ -194,6 +366,40 @@ class Global extends React.Component {
   };
 
 
+  updateUser = ({id, nom, prenom, email, phone, departement, userType}) => {
+    new StaticService().updateUser({id, nom, prenom, email, phone, departement, userType}).then(res => {
+      if (res.data.success === true) {
+        this.getUsers();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  updateCandidat = ({id, commune, prenom, profession, ordre, nom, dossier, sexe, date, statut, lieu}) => {
+    console.log("d", id)
+    new StaticService().updateCandidat({
+      id,
+      commune,
+      prenom,
+      profession,
+      ordre,
+      nom,
+      dossier,
+      sexe,
+      date,
+      statut,
+      lieu
+    }).then(res => {
+      if (res.data.success === true) {
+        this.getCandidat();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+
   readUploadFile = (e) => {
     e.preventDefault();
     if (e.target.files) {
@@ -205,8 +411,9 @@ class Global extends React.Component {
         const worksheet = workbook.Sheets[sheetName];
         let json = utils.sheet_to_json(worksheet);
         this.setState({json: json});
+        console.log(json);
       };
-      console.log(this.state.json);
+      console.log('state',this.state.json);
       reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
@@ -215,6 +422,9 @@ class Global extends React.Component {
     this.getRegion();
     this.getDepartement();
     this.getCommune();
+    this.getCandidat();
+    this.getUsers();
+    this.getDemandeur();
   }
 
 
@@ -225,15 +435,28 @@ class Global extends React.Component {
           createRegion: this.createRegion,
           createDepartement: this.createDepartement,
           createCommune: this.createCommune,
+          createCandidat: this.createCandidat,
+          chargerDemandeur: this.createDemandeur,
           getRegion: this.getRegion,
           getDepartement: this.getDepartement,
           getCommune: this.getCommune,
+          getCandidat: this.getCandidat,
+          getUsers: this.getUsers,
+          getDemandeur: this.getDemandeur,
           deleteRegion: this.deleteRegion,
           deleteDepartement: this.deleteDepartement,
           deleteCommune: this.deleteCommune,
+          deleteCandidat: this.deleteCandiat,
+          deleteDemandeur: this.deleteDemandeur,
+          deleteUser: this.deleteUser,
           updateRegion: this.updateRegion,
           updateDepartement: this.updateDepartement,
           updateCommune: this.updateCommune,
+          updateCandidat: this.updateCandidat,
+          updateUser: this.updateUser,
+          addUser: this.signup,
+          login: this.signin,
+          logout: this.logout,
           state: this.state
         }}>
         {this.props.children}
