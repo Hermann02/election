@@ -1,4 +1,5 @@
 import axios from 'axios'
+import data from "@coreui/coreui/js/src/dom/data";
 
 export default class DataService {
   constructor() {
@@ -18,5 +19,7 @@ export default class DataService {
     return this.client.get(url, config);
   };
 
-
+  upload = (url, data) => {
+    return axios.post("http://localhost:3001/api" + url, data);
+  }
 }

@@ -34,11 +34,10 @@ const AppSidebar = () => {
         },
         {
           component: CNavItem,
-          name: 'Bureaux de vote',
-          to: '/bureau/vote',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          name: 'Candidatures',
+          to: '/listes',
+          icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
         },
-
         {
           component: CNavGroup,
           name: 'Gestion des electeurs',
@@ -57,6 +56,13 @@ const AppSidebar = () => {
 
           ],
         },
+
+        {
+          component: CNavItem,
+          name: 'Bureaux de vote',
+          to: '/bureau/vote',
+          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+        },
       ];
       break;
 
@@ -67,6 +73,12 @@ const AppSidebar = () => {
           name: 'Dashboard',
           to: '/dashboard',
           icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+        },
+        {
+          component: CNavItem,
+          name: 'Candidatures',
+          to: '/listes',
+          icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
         },
       ];
       break;
@@ -83,6 +95,12 @@ const AppSidebar = () => {
           component: CNavItem,
           name: 'Candidats',
           to: '/candidat',
+          icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
+        },
+        {
+          component: CNavItem,
+          name: 'Liste',
+          to: '/liste/creer',
           icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
         },
       ];

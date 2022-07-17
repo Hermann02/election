@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  CBadge,
   CButton,
   CCard,
   CCardBody, CCardFooter,
@@ -27,6 +28,16 @@ const Demandeur = () => {
   const [id, setId] = useState(null);
   const [validated, setValidated] = useState(false);
 
+  const getBadge = (status) => {
+    switch (status) {
+      case true:
+        return 'success'
+      case false:
+        return 'warning'
+      default:
+        return 'primary'
+    }
+  }
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -35,6 +46,7 @@ const Demandeur = () => {
     }
     setValidated(true);
   };
+
 
   const columns = [
     {
@@ -94,7 +106,7 @@ const Demandeur = () => {
       _style: {width: '50%'},
     },
     {
-      key: 'Status',
+      key: 'status',
       label: 'Statut',
       filter: false,
       sorter: false,
@@ -178,11 +190,12 @@ const Demandeur = () => {
                       <CCol md={3}>
                         <div className="mb-3">
                           <CFormLabel htmlFor="formFileSm">Charger un fichier exel</CFormLabel>
-                          <CFormInput type="file" size="sm" id="formFileSm" onChange={e=>setFile(e)} />
+                          <CFormInput type="file" size="sm" id="formFileSm" onChange={e => context.readUploadFile(e)}/>
                         </div>
                       </CCol>
                       <CCol xs={12}>
-                        <CButton color="primary" type="submit" onClick={()=>context.chargerDemandeur({file,commune,type,status})} >
+                        <CButton color="primary" type="submit"
+                                 onClick={() => context.chargerDemandeur({file, departement, type, status})}>
                           Ajouter
                         </CButton>
                       </CCol>
@@ -204,6 +217,26 @@ const Demandeur = () => {
                         _id: (item) => (
                           <td>{item._id + 1}</td>
                         ),
+                        'status':
+                          (item) => (
+                            <td>
+                              <CBadge color={getBadge(item.status)}>
+                                {item.status ? 'actif' : 'inactif'}
+                              </CBadge>
+                            </td>
+                          ),
+                        'type':
+                          (item) => (
+                            <td>
+                                {item.type === 'CT' ? 'chef traditionnel' : 'conseiller municipal'}
+                            </td>
+                          ),
+                        'sexe':
+                          (item) => (
+                            <td>
+                                {item.sexe === 'M' ? 'masculin' : 'feminin'}
+                            </td>
+                          ),
                         actions: (item) => {
                           return (
                             <td className="py-2">

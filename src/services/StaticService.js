@@ -15,8 +15,20 @@ export default class StaticService extends DataService {
     return this.post('/communes/create', {departement, nom});
   }
 
+  uploadFiles(data) {
+    return this.upload('/candidats/upload', data);
+  }
+
   createCandidat({commune, token, prenom, profession, ordre, nom, dossier, sexe, date, lieu}) {
-    return this.post('/candidats/create', {commune, prenom, profession, ordre, nom, dossier, sexe, date, lieu}, {
+    return this.post('/candidats/create', {commune, token, prenom, profession, ordre, nom, dossier, sexe, date, lieu}, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  }
+
+  createListe({departement, token, nom, candidats, collegeType}) {
+    return this.post('/listes/create', {departement, nom, candidats, collegeType}, {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -52,6 +64,10 @@ export default class StaticService extends DataService {
 
   updateCommune({departement, nom, id}) {
     return this.post('/communes/' + id + '/update', {departement, nom});
+  }
+
+  updateListe({departement, nom, id, status, candidats}) {
+    return this.post('/listes/' + id + '/update', {departement, nom, status, candidats});
   }
 
   updateUser({nom, prenom, email, phone, departement, userType, id}) {
@@ -98,6 +114,10 @@ export default class StaticService extends DataService {
 
   getDemandeur() {
     return this.get('/demandeur/list', {})
+  }
+
+  getListe() {
+    return this.get('/listes/list', {})
   }
 
 

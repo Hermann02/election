@@ -34,6 +34,7 @@ const Departement = () => {
   };
 
   const handleUpdate = (item) => {
+    console.log(item)
     setUpdate(true);
     setNom(item.nom);
     setId(item.id);
@@ -142,7 +143,7 @@ const Departement = () => {
                       itemsPerPage={5}
                       pagination
                       scopedColumns={{
-                        numero: (item) => (
+                        'numero': (item) => (
                           <td>
                             {item._id + 1}
                           </td>

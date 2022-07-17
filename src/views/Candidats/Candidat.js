@@ -29,12 +29,13 @@ const Candidat = () => {
   const [dossier, setDossier] = useState('');
   const [ordre, setOrdre] = useState(0);
   const [departement, setDepartement] = useState('');
-  const [region, setRegion] = useState('');
+  const [urls, setUrls] = useState('');
+  const [college, setCollege] = useState('');
   const [id, setId] = useState('');
   const [statut, setStatut] = useState(false);
   const [update, setUpdate] = useState(null);
   const context = useContext(GlobalContext);
-  const {token,setToken} = useToken();
+  const {token, setToken} = useToken();
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -58,6 +59,7 @@ const Candidat = () => {
     setSexe(item.sexe);
     setDossier(item.dossier);
   };
+
 
   const columns = [
     {
@@ -135,23 +137,6 @@ const Candidat = () => {
 
                       <CRow>
                         <CCol md={4} className="position-relative">
-                          <CFormLabel htmlFor="validationTooltip04">Region</CFormLabel>
-                          <CFormSelect id="validationTooltip04" value={region} onChange={(e) => setRegion(e.target.value)}
-                                       required>
-                            <option disabled defaultValue="">
-                              Choisissez...
-                            </option>
-                            <option>...</option>
-                            {context.state.regions.map(item =>
-                              <option value={item._id}>{item.nom}</option>
-                            )}
-
-                          </CFormSelect>
-                          <CFormFeedback tooltip invalid>
-                            Veuillez selectionner une region.
-                          </CFormFeedback>
-                        </CCol>
-                        <CCol md={4} className="position-relative">
                           <CFormLabel htmlFor="validationTooltip04">Departement</CFormLabel>
                           <CFormSelect id="validationTooltip04" value={departement}
                                        onChange={(e) => setDepartement(e.target.value)} required>
@@ -159,9 +144,11 @@ const Candidat = () => {
                               Choisissez...
                             </option>
                             <option>...</option>
-                            {context.state.departements.filter(i => i.region === region).map(item =>
-                              <option value={item._id}>{item.nom}</option>
-                            )}
+                            <option
+                              value={token.user.departement}>{context.state.departements.filter(i => i._id === token.user.departement)[0]?.nom}</option>
+                            {/*{context.state.departements.filter(i => i.region === region).map(item =>*/}
+                            {/*  <option value={item._id}>{item.nom}</option>*/}
+                            {/*)}*/}
 
                           </CFormSelect>
                           <CFormFeedback tooltip invalid>
@@ -183,6 +170,22 @@ const Candidat = () => {
                           </CFormSelect>
                           <CFormFeedback tooltip invalid>
                             Veuillez selectionner la commune du candidat.
+                          </CFormFeedback>
+                        </CCol>
+
+                        <CCol md={4} className="position-relative">
+                          <CFormLabel htmlFor="validationTooltip04">College</CFormLabel>
+                          <CFormSelect value={college} onChange={e => setCollege(e.target.value)}
+                                       id="validationTooltip04"
+                                       required>
+                            <option disabled defaultValue="">
+                              Choisissez...
+                            </option>
+                            <option value="CD">chef de departement</option>
+                            <option value="CT">chef traditionnel</option>
+                          </CFormSelect>
+                          <CFormFeedback tooltip invalid>
+                            Veuillez selectionner un college electoral.
                           </CFormFeedback>
                         </CCol>
                       </CRow>
@@ -251,7 +254,8 @@ const Candidat = () => {
                               value={date}
                               onChange={(e) => setDate(e.target.value)}
                             />
-                            <CFormFeedback invalid>Veuillez selectionner la date de naissance du candidat.</CFormFeedback>
+                            <CFormFeedback invalid>Veuillez selectionner la date de naissance du
+                              candidat.</CFormFeedback>
                           </CInputGroup>
                         </CCol>
 
@@ -267,7 +271,7 @@ const Candidat = () => {
                               value={lieu}
                               onChange={(e) => setLieu(e.target.value)}
                             />
-                            <CFormFeedback invalid>Veuillez entrer le lieu de naissance  du candidat.</CFormFeedback>
+                            <CFormFeedback invalid>Veuillez entrer le lieu de naissance du candidat.</CFormFeedback>
                           </CInputGroup>
                         </CCol>
 
@@ -305,8 +309,9 @@ const Candidat = () => {
 
                       <CCol md={4}>
                         <div className="mb-3">
-                          <CFormLabel  htmlFor="formFileSm">Dossier</CFormLabel>
-                          <CFormInput type="file"  size="sm" id="formFileSm" onChange={e=>setDossier(e.target.value)} />
+                          <CFormLabel htmlFor="formFileSm">Dossier</CFormLabel>
+                          <CFormInput type="file" size="sm" id="formFileSm"
+                                      onChange={e => context.uploadFile(e)}/>
                         </div>
                       </CCol>
                       <CRow>
@@ -318,12 +323,35 @@ const Candidat = () => {
                         update ?
                           <CButton color="primary" type="submit" onClick={() => {
                             setUpdate(false);
-                            context.updateCandidat({commune,prenom,profession,ordre,nom,date,lieu,sexe,dossier,statut,id})
+                            context.updateCandidat({
+                              commune,
+                              prenom,
+                              profession,
+                              ordre,
+                              nom,
+                              date,
+                              lieu,
+                              sexe,
+                              dossier,
+                              statut,
+                              id
+                            })
                           }}>
                             Modifier
                           </CButton>
                           :
-                          <CButton color="primary" type="submit" onClick={() => context.createCandidat({commune,prenom,profession,ordre,nom,date,lieu,sexe,dossier,token})}>
+                          <CButton color="primary" type="submit" onClick={() => context.createCandidat({
+                            commune,
+                            prenom,
+                            profession,
+                            ordre,
+                            nom,
+                            date,
+                            lieu,
+                            sexe,
+                            dossier,
+                            token: token.token
+                          })}>
                             Ajouter
                           </CButton>
                       }
@@ -339,7 +367,7 @@ const Candidat = () => {
                       columns={columns}
                       columnFilter
                       columnSorter
-                      items={context.state.candidats}
+                      items={context.state.candidats.filter(i => i.owner === token.user._id)}
                       itemsPerPageSelect
                       itemsPerPage={5}
                       pagination

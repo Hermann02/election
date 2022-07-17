@@ -79,6 +79,13 @@ const Users = () => {
       _style: {width: '50%'},
     },
     {
+      key: 'departement',
+      label: 'departement',
+      filter: false,
+      sorter: false,
+      _style: {width: '50%'},
+    },
+    {
       key: 'email',
       label: 'email',
       filter: false,
@@ -280,7 +287,17 @@ const Users = () => {
                         update ?
                           <CButton color="primary" type="submit" onClick={() => {
                             setUpdate(false);
-                            context.updateUser({id,nom, prenom, email, phone, departement, userType, confirmedPassword, password})
+                            context.updateUser({
+                              id,
+                              nom,
+                              prenom,
+                              email,
+                              phone,
+                              departement,
+                              userType,
+                              confirmedPassword,
+                              password
+                            })
                           }}>
                             Modifier
                           </CButton>
@@ -310,7 +327,7 @@ const Users = () => {
                       columns={columns}
                       columnFilter
                       columnSorter
-                      items={context.state.users}
+                      items={context.state.users.filter(i=> i.userType !== 'AD')}
                       itemsPerPageSelect
                       itemsPerPage={5}
                       pagination
@@ -318,6 +335,15 @@ const Users = () => {
                         _id: (item) => (
                           <td>{item._id + 1}</td>
                         ),
+                        'departement': (item) => (
+                          <td>{context.state.departements.filter(i => i._id === item.departement)[0]?.nom}</td>
+                        ),
+                        'userType':
+                          (item) => (
+                            <td>
+                              {item.userType === 'CE' ? 'conseiller electoral' : item.userType === 'CD' ? 'chef de departement' : 'mandataire'}
+                            </td>
+                          ),
                         actions: (item) => {
                           return (
                             <td className="py-2">

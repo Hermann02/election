@@ -4,6 +4,9 @@ import Electeur from "./views/electeurs/electeur/Electeur";
 import BureauVote from "./views/bureau/BureauVote";
 import Candidat from "./views/Candidats/Candidat";
 import Users from "./views/users/Users";
+import AjouterListe from "./views/Candidats/AjouterListe";
+import Liste from "./views/liste/Liste";
+import Verification from "./views/liste/Verification";
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
 const Lieux = React.lazy(() => import('./views/lieux/Lieux'));
@@ -65,6 +68,9 @@ const routes = [
   { path: '/bureau/vote', name: 'Bureau de vote', element: BureauVote },
   { path: '/candidat', name: 'Candidat', element: Candidat },
   { path: '/users', name: 'Utilisateurs', element: Users },
+  { path: '/liste/creer', name: 'Créer Liste', element: AjouterListe },
+  { path: '/listes', name: 'Liste des candidats', element: Liste },
+  { path: '/liste/verification', name: 'Liste des candidats', element: Verification },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
