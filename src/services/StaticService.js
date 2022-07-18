@@ -35,6 +35,14 @@ export default class StaticService extends DataService {
     });
   }
 
+  createBV({nom, collegeType, listes, token, departement, electeurs,}) {
+    return this.post('/bureauVote/create', {nom, collegeType, listes, departement, electeurs,}, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+  }
+
   chargerDemandeur({code, type, nom, prenom, sexe, telephone, profession, dateNaissance, pere, mere, dateInscription, commune, status,}) {
     return this.post('/demandeur/create', {
       code,
@@ -66,8 +74,8 @@ export default class StaticService extends DataService {
     return this.post('/communes/' + id + '/update', {departement, nom});
   }
 
-  updateListe({departement, nom, id, status, owner,candidats,collegeType}) {
-    return this.post('/listes/' + id + '/update', {departement,owner,collegeType, nom, status, candidats});
+  updateListe({departement, nom, id, status, owner, candidats, collegeType}) {
+    return this.post('/listes/' + id + '/update', {departement, owner, collegeType, nom, status, candidats});
   }
 
   updateUser({nom, prenom, email, phone, departement, userType, id}) {
@@ -81,7 +89,18 @@ export default class StaticService extends DataService {
     });
   }
 
-  updateCandidat({commune, prenom,owner,observation, profession, ordre, nom, dossier, sexe, date, lieu, statut, id}) {
+  updateBV({nom, collegeType, owner, listes, departement, electeurs, id}) {
+    return this.post('/bureauVote/' + id + '/update', {
+      nom,
+      collegeType,
+      owner,
+      listes,
+      departement,
+      electeurs,
+    });
+  }
+
+  updateCandidat({commune, prenom, owner, observation, profession, ordre, nom, dossier, sexe, date, lieu, statut, id}) {
     return this.post('/candidats/' + id + '/update', {
       commune,
       prenom,
@@ -122,6 +141,14 @@ export default class StaticService extends DataService {
     return this.get('/listes/list', {})
   }
 
+  getElecteur() {
+    return this.get('/electeurs/list', {})
+  }
+
+  getBureauVote() {
+    return this.get('/BureauVote/list', {})
+  }
+
 
   deleteRegion(id) {
     return this.get('/regions/' + id + '/delete', {})
@@ -147,8 +174,8 @@ export default class StaticService extends DataService {
     return this.get('/users/' + id + '/delete', {})
   }
 
-  deleteListe(id) {
-    return this.get('/listes/' + id + '/delete', {})
+  deleteBV(id) {
+    return this.get('/bureauVote/' + id + '/delete', {})
   }
 
 
@@ -172,6 +199,23 @@ export default class StaticService extends DataService {
 
   logout(token) {
     return this.post('/users/signout', {}, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+  }
+
+  signUpE({code, userType, confirmedPassword, departement, password}) {
+    return this.post('/electeurs/signup', {code, userType, departement, confirmedPassword, password}, {})
+  }
+
+  signInE({code, password}) {
+    return this.post('/electeurs/signin', {code, password}, {})
+  }
+
+
+  logoutE(token) {
+    return this.post('/electeurs/signout', {}, {
       headers: {
         'Authorization': 'Bearer ' + token
       }

@@ -10,7 +10,7 @@ import {
   CFormInput,
   CFormLabel, CFormSelect,
   CInputGroup, CInputGroupText,
-  CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow,CFormTextarea,
+  CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow, CFormTextarea,
   CModal, CModalBody, CModalContent, CModalDialog, CModalFooter, CModalHeader, CModalTitle
 } from '@coreui/react'
 import {GlobalContext} from "../../services/Global";
@@ -29,6 +29,7 @@ const Verification = props => {
 
   const [data, setData] = useState(null);
   const [nom, setNom] = useState('');
+  const [status, setStatus] = useState('');
   const [observation, setObservation] = useState('');
   const [owner, setOwner] = useState('');
   const [departement, setDepartement] = useState('');
@@ -54,11 +55,11 @@ const Verification = props => {
   };
 
   const handleUpdate = (item) => {
-    setUpdate(true);
+    setData(item);
+    setObservation(item.observation)
     setNom(item.nom);
     setId(item.id);
     console.log(item);
-    setStatus(item.status);
     setcollegeType(item.collegeType);
   };
 
@@ -151,7 +152,7 @@ const Verification = props => {
                               <td className="py-2">
                                 <CIcon icon={cilFolderOpen} customClassName=" modal-toggle nav-icon"
                                        onClick={() => {
-                                         setData(item);
+                                         handleUpdate(item);
                                          setOpen(true);
                                        }}/>
                               </td>
@@ -182,60 +183,119 @@ const Verification = props => {
                       </CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                          <CRow>
-                            <CCol>
-                              <p>Nom : {data?.nom}</p>
-                              <p>Prenom : {data?.prenom}</p>
-                              <p>Sexe : {data?.sexe}</p>
-                              <p>Profession : {data?.profession}</p>
+                      <CRow>
+                        <CCol>
+                          <p>Nom : {data?.nom}</p>
+                          <p>Prenom : {data?.prenom}</p>
+                          <p>Sexe : {data?.sexe}</p>
+                          <p>Profession : {data?.profession}</p>
+                        </CCol>
+                        <CCol>
+                          <p>Commune : {context.state.communes.filter(i => i._id === data?.commune)[0]?.nom}</p>
+                          <p>Date de naissance : {data?.date}</p>
+                          <p>Lieu : {data?.lieu}</p>
+                          <p>Ordre sur la liste : {data?.ordre}</p>
+                        </CCol>
+                        {token.user.userType === 'CD' ?
+                          <CCol>
+                            <CCol md={4}>
+                              <CFormLabel htmlFor="validationDefaultUsername">Observation</CFormLabel>
+                              <CInputGroup className="has-validation">
+                                <CFormTextarea
+                                  type="text"
+                                  id="validationDefaultUsername"
+                                  defaultValue=""
+                                  aria-describedby="inputGroupPrepend02"
+                                  required
+                                  value={observation}
+                                  onChange={(e) => setObservation(e.target.value)}
+                                />
+                                <CFormFeedback invalid>Veuillez emettre une observation.</CFormFeedback>
+                              </CInputGroup>
                             </CCol>
-                            <CCol>
-                              <p>Commune : {context.state.communes.filter(i => i._id === data?.commune)[0]?.nom}</p>
-                              <p>Date de naissance : {data?.date}</p>
-                              <p>Lieu : {data?.lieu}</p>
-                              <p>Ordre sur la liste : {data?.ordre}</p>
-                            </CCol>
-                            <CCol>
-                              <CCol md={4}>
-                                <CFormLabel htmlFor="validationDefaultUsername">Observation</CFormLabel>
-                                <CInputGroup className="has-validation">
-                                  <CFormTextarea
-                                    type="text"
-                                    id="validationDefaultUsername"
-                                    defaultValue=""
-                                    aria-describedby="inputGroupPrepend02"
-                                    required
-                                    value={observation}
-                                    onChange={(e) => setObservation(e.target.value)}
-                                  />
-                                  <CFormFeedback invalid>Veuillez emettre une observation.</CFormFeedback>
-                                </CInputGroup>
-                              </CCol>
 
-                            </CCol>
-                          </CRow>
+                          </CCol>
+                          :
+                          <CCol>
+                            <p>Observation : {data?.observation}</p>
+                          </CCol>
+                        }
+                      </CRow>
 
                     </CModalBody>
                     <CModalFooter>
-                      <CButton color="primary" type="submit" onClick={() => {
-                       context.updateCandidat({
-                          commune:data.commune,
-                          prenom:data.prenom,
-                          profession: data.profession,
-                          ordre: data.ordre,
-                          nom: data.nom,
-                          date: data.date,
-                          lieu: data.lieu,
-                          sexe: data.sexe,
-                          dossier: data.dossier,
-                          statut: data.statut,
-                          id: data.id,
-                         owner: data.owner,
-                         observation
-                        })
-                      }}>
-                        Modifier
-                      </CButton>
+                      {token.user.userType === 'CD' && data.observation?
+                        <CButton color="primary" type="submit" onClick={() => {
+                          context.updateCandidat({
+                            commune: data.commune,
+                            prenom: data.prenom,
+                            profession: data.profession,
+                            ordre: data.ordre,
+                            nom: data.nom,
+                            date: data.date,
+                            lieu: data.lieu,
+                            sexe: data.sexe,
+                            dossier: data.dossier,
+                            status: data.status,
+                            id: data.id,
+                            owner: data.owner,
+                            observation
+                          });
+                          handleClose()
+                        }
+                        }>
+                          Valider
+                        </CButton>
+                        :
+                        <CRow>
+                          <CCol>
+                            <CButton color="success" type="submit" onClick={() => {
+                              context.updateCandidat({
+                                commune: data.commune,
+                                prenom: data.prenom,
+                                profession: data.profession,
+                                ordre: data.ordre,
+                                nom: data.nom,
+                                date: data.date,
+                                lieu: data.lieu,
+                                sexe: data.sexe,
+                                dossier: data.dossier,
+                                status: "Acceptee",
+                                id: data.id,
+                                owner: data.owner,
+                                observation: data.observation
+                              });
+                              handleClose()
+                            }
+                            }>
+                              Accepter
+                            </CButton>
+                          </CCol>
+                          <CCol>
+                            <CButton color="danger" type="submit" onClick={() => {
+                              context.updateCandidat({
+                                commune: data.commune,
+                                prenom: data.prenom,
+                                profession: data.profession,
+                                ordre: data.ordre,
+                                nom: data.nom,
+                                date: data.date,
+                                lieu: data.lieu,
+                                sexe: data.sexe,
+                                dossier: data.dossier,
+                                status: "Rejetee",
+                                id: data.id,
+                                owner: data.owner,
+                                observation: data.observation
+                              });
+                              handleClose()
+                            }
+                            }>
+                              Rejeter
+                            </CButton>
+                          </CCol>
+                        </CRow>
+                      }
                     </CModalFooter>
                   </CModalContent>
                 </CModalDialog>

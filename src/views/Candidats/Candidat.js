@@ -34,7 +34,7 @@ const Candidat = () => {
   const [urls, setUrls] = useState('');
   const [college, setCollege] = useState('');
   const [id, setId] = useState('');
-  const [statut, setStatut] = useState(false);
+  const [status, setStatus] = useState('');
   const [update, setUpdate] = useState(null);
   const context = useContext(GlobalContext);
   const {token, setToken} = useToken();
@@ -53,7 +53,7 @@ const Candidat = () => {
     setPrenom(item.prenom);
     setId(item.id);
     console.log(item)
-    setStatut(item.statut);
+    setStatus(item.status);
     setProfession(item.profession);
     setLieu(item.lieu);
     setDate(item.date);
@@ -348,7 +348,7 @@ const Candidat = () => {
                               lieu,
                               sexe,
                               dossier,
-                              statut,
+                              status,
                               id
                             })
                           }}>

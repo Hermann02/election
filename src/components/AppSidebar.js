@@ -22,120 +22,121 @@ const AppSidebar = () => {
   const {token, setToken} = useToken();
   let routes = [];
 
-  switch (token?.user.userType) {
+  if (token) {
+    switch (token?.user.userType) {
 
-    case 'CD' :
-      routes = [
-        {
-          component: CNavItem,
-          name: 'Dashboard',
-          to: '/dashboard',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Candidatures',
-          to: '/listes',
-          icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavGroup,
-          name: 'Gestion des electeurs',
-          icon: <CIcon icon={cilPuzzle} customClassName="nav-icon"/>,
-          items: [
-            {
-              component: CNavItem,
-              name: 'Electeurs',
-              to: '/electeur',
-            },
-            {
-              component: CNavItem,
-              name: 'Demandeur',
-              to: '/demandeur',
-            },
+      case 'CD' :
+        routes = [
+          {
+            component: CNavItem,
+            name: 'Dashboard',
+            to: '/dashboard',
+            icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Candidatures',
+            to: '/listes',
+            icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavGroup,
+            name: 'Gestion des electeurs',
+            icon: <CIcon icon={cilPuzzle} customClassName="nav-icon"/>,
+            items: [
+              {
+                component: CNavItem,
+                name: 'Electeurs',
+                to: '/electeur',
+              },
+              {
+                component: CNavItem,
+                name: 'Demandeur',
+                to: '/demandeur',
+              },
 
-          ],
-        },
+            ],
+          },
 
-        {
-          component: CNavItem,
-          name: 'Bureaux de vote',
-          to: '/bureau/vote',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
-        },
-      ];
-      break;
+          {
+            component: CNavItem,
+            name: 'Bureaux de vote',
+            to: '/bureau/vote',
+            icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          },
+        ];
+        break;
 
-    case 'CE' :
-      routes = [
-        {
-          component: CNavItem,
-          name: 'Dashboard',
-          to: '/dashboard',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Candidatures',
-          to: '/listes',
-          icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
-        },
-      ];
-      break;
+      case 'CE' :
+        routes = [
+          {
+            component: CNavItem,
+            name: 'Dashboard',
+            to: '/dashboard',
+            icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Candidatures',
+            to: '/listes',
+            icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
+          },
+        ];
+        break;
 
-    case 'MD' :
-      routes = [
-        {
-          component: CNavItem,
-          name: 'Dashboard',
-          to: '/dashboard',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Candidats',
-          to: '/candidat',
-          icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Liste',
-          to: '/liste/creer',
-          icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
-        },
-      ];
-      break;
+      case 'MD' :
+        routes = [
+          {
+            component: CNavItem,
+            name: 'Dashboard',
+            to: '/dashboard',
+            icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Candidats',
+            to: '/candidat',
+            icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Liste',
+            to: '/liste/creer',
+            icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
+          },
+        ];
+        break;
 
-    case 'AD' :
-      routes = [
-        {
-          component: CNavItem,
-          name: 'Dashboard',
-          to: '/dashboard',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Gestion des lieux',
-          to: '/lieux',
-          icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Gestion des Utilisateurs',
-          to: '/users',
-          icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
-        },
-        {
-          component: CNavItem,
-          name: 'Demandeurs',
-          to: '/demandeur',
-          icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
-        },
-      ];
-      break;
+      case 'AD' :
+        routes = [
+          {
+            component: CNavItem,
+            name: 'Dashboard',
+            to: '/dashboard',
+            icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Gestion des lieux',
+            to: '/lieux',
+            icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Gestion des Utilisateurs',
+            to: '/users',
+            icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
+          },
+          {
+            component: CNavItem,
+            name: 'Demandeurs',
+            to: '/demandeur',
+            icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
+          },
+        ];
+        break;
+    }
   }
-
   console.log(routes, 'nav');
   return (
     <>

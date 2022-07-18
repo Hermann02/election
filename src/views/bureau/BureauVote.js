@@ -20,8 +20,13 @@ import {CSmartTable} from "@coreui/react-pro";
 
 const BureauVote = () => {
   const [validated, setValidated] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [id, setId] = useState('');
   const [nom, setNom] = useState('');
   const [departement, setDepartement] = useState('');
+  const [listes, setListes] = useState([]);
+  const [electeurs, setElecteurs] = useState([]);
+  const [owner, setOwner] = useState('');
   const [college, setCollege] = useState('');
   const {token, setToken} = useToken();
   const context = useContext(GlobalContext);
@@ -29,11 +34,25 @@ const BureauVote = () => {
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+    setListes(context.state.listes.filter(i => i.departement === departement && i.collegeType === college && i.status === "accepetee"));
+    setElecteurs(context.state.electeurs.filter(i => i.departement === departement && i.userType === college));
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation()
     }
     setValidated(true)
+  };
+
+  const handleUpdate = (item) => {
+    setUpdate(true);
+    setNom(item.nom);
+    setId(item.id);
+    console.log(item);
+    setOwner(item.owner);
+    setCollege(item.collegeType);
+    setListes(item.listes);
+    setDepartement(item.departement);
+    setElecteurs(item.electeurs)
   };
 
 
@@ -53,18 +72,25 @@ const BureauVote = () => {
       _style: {width: '50%'},
     },
     {
+      key: 'collegeType',
+      label: 'collegeType',
+      filter: false,
+      sorter: false,
+      _style: {width: '50%'},
+    },
+    {
       key: 'electeurs',
       label: 'electeurs',
       filter: false,
       sorter: false,
-      _style: {width: '50%'},
+      _style: {width: '10%'},
     },
     {
       key: 'listes',
       label: 'listes',
       filter: false,
       sorter: false,
-      _style: {width: '50%'},
+      _style: {width: '10%'},
     },
     {
       key: 'actions',
@@ -74,7 +100,6 @@ const BureauVote = () => {
       sorter: false,
     },
   ];
-
 
 
   return (
@@ -96,8 +121,9 @@ const BureauVote = () => {
                         <CFormLabel htmlFor="validationTooltip04">Departement</CFormLabel>
                         <CFormSelect value={departement} onChange={e => setDepartement(e.target.value)}
                                      id="validationTooltip04" required>
+                          <option>...</option>
                           <option value={token.user.departement}>
-                            {context.state.communes.filter(item => item._id === token.user.departement)[0]?.nom}
+                            {context.state.departements.filter(item => item._id === token.user.departement)[0]?.nom}
                           </option>
                         </CFormSelect>
                         <CFormFeedback tooltip invalid>
@@ -112,6 +138,7 @@ const BureauVote = () => {
                           <option disabled defaultValue="">
                             Choisissez...
                           </option>
+                          <option>...</option>
                           <option value="CD">chef de departement</option>
                           <option value="CT">chef traditionnel</option>
                         </CFormSelect>
@@ -129,12 +156,21 @@ const BureauVote = () => {
                             defaultValue=""
                             aria-describedby="inputGroupPrepend02"
                             required
+                            value={nom}
+                            onChange={(e) => setNom(e.target.value)}
                           />
                           <CFormFeedback invalid>Veuillez entrer le nom du bureau de vote.</CFormFeedback>
                         </CInputGroup>
                       </CCol>
                       <CCol xs={12}>
-                        <CButton color="primary" type="submit" onClick={e=>context.a} >
+                        <CButton color="primary" type="submit" onClick={() => context.createBV({
+                          token: token.token,
+                          listes,
+                          electeurs,
+                          collegeType: college,
+                          nom,
+                          departement
+                        })}>
                           Ajouter
                         </CButton>
                       </CCol>
@@ -150,15 +186,19 @@ const BureauVote = () => {
                       columns={columns}
                       columnFilter
                       columnSorter
-                      items={context.state.communes}
+                      items={context.state.bureaux}
                       itemsPerPageSelect
                       itemsPerPage={5}
                       pagination
                       scopedColumns={{
-                        _id: (item) => (
+                        "_id": (item) => (
                           <td>
                             {item._id + 1}
                           </td>
+                        ),
+                        'collegeType': (item) => (
+                          item.collegeType === 'CD' ? <td>chef de departement</td> : <td>chef traditionnel</td>
+
                         ),
                         actions: (item) => {
                           return (
@@ -166,8 +206,8 @@ const BureauVote = () => {
                               <CDropdown>
                                 <CDropdownToggle color="secondary">Actions</CDropdownToggle>
                                 <CDropdownMenu>
-                                  <CDropdownItem>Supprimer</CDropdownItem>
-                                  <CDropdownItem>Modifier</CDropdownItem>
+                                  <CDropdownItem onClick={() => context.deleteBV(item.id)}>Supprimer</CDropdownItem>
+                                  <CDropdownItem onClick={() => handleUpdate(item)}>Modifier</CDropdownItem>
                                 </CDropdownMenu>
                               </CDropdown>
                             </td>
@@ -175,15 +215,15 @@ const BureauVote = () => {
                         },
                         electeurs: (item) => {
                           return (
-                              <td className="py-2">
-                                {/*{item.electeurs.length}*/}
-                              </td>
+                            <td className="py-2">
+                              {item.electeurs.length}
+                            </td>
                           )
                         },
                         listes: (item) => {
                           return (
                             <td className="py-2">
-                              {/*{item.listes.length}*/}
+                              {item.listes.length}
                             </td>
                           )
                         },

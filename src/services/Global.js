@@ -8,6 +8,8 @@ class Global extends React.Component {
 
   state = {
     regions: [],
+    electeurs: [],
+    bureaux: [],
     departements: [],
     communes: [],
     candidats: [],
@@ -49,6 +51,17 @@ class Global extends React.Component {
     new StaticService().createCommune({departement, nom}).then(res => {
       if (res.data.success === true) {
         this.getCommune();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  createBV = ({nom, collegeType, listes, token, departement, electeurs}) => {
+    console.log();
+    new StaticService().createBV({nom, collegeType, listes, token, departement, electeurs}).then(res => {
+      if (res.data.success === true) {
+        this.getBV();
       }
     }, err => {
       console.error(err);
@@ -278,6 +291,32 @@ class Global extends React.Component {
   };
 
 
+  getBV = () => {
+    new StaticService().getBureauVote().then(res => {
+      console.log("bv", res.data);
+      if (res.data.success === true) {
+        this.setState({bureaux: res.data.data});
+      }
+    }, err => {
+      console.error(err);
+      this.setState({bureaux: []});
+    });
+  };
+
+
+  getElecteurs = () => {
+    new StaticService().getElecteur().then(res => {
+      console.log("electeurs", res.data);
+      if (res.data.success === true) {
+        this.setState({electeurs: res.data.data});
+      }
+    }, err => {
+      console.error(err);
+      this.setState({electeurs: []});
+    });
+  };
+
+
   deleteRegion = (id) => {
     new StaticService().deleteRegion(id).then(res => {
       if (res.data.success === true) {
@@ -350,6 +389,16 @@ class Global extends React.Component {
     });
   };
 
+  deleteBV = (id) => {
+    new StaticService().deleteBV(id).then(res => {
+      if (res.data.success === true) {
+        this.getBv();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
 
   signup = ({nom, prenom, email, phone, departement, userType, confirmedPassword, password}) => {
     return new StaticService().signup({
@@ -371,12 +420,30 @@ class Global extends React.Component {
     ;
   };
 
+
+  signUpE = ({code, userType, confirmedPassword, password, departement}) => {
+    if (this.state.demandeurs.filter(i => i.code === code && i.status === false)) {
+      return new StaticService().signUpE({code, userType, confirmedPassword, departement, password});
+    } else {
+      console.log("erreur")
+    }
+  };
+
   signin = ({email, password}) => {
     return new StaticService().signin({email, password});
   };
 
 
   logout = (token) => {
+    return new StaticService().logout(token);
+  };
+
+  signInE = ({code, password}) => {
+    return new StaticService().signInE({code, password});
+  };
+
+
+  logoutE = (token) => {
     return new StaticService().logout(token);
   };
 
@@ -434,7 +501,18 @@ class Global extends React.Component {
     });
   };
 
-  updateCandidat = ({id, commune, prenom, profession, owner,observation,ordre, nom, dossier, sexe, date, statut, lieu}) => {
+
+  updateBV = ({nom, collegeType, owner, listes, departement, electeurs, id}) => {
+    new StaticService().updateBV({nom, collegeType, owner, listes, departement, electeurs, id}).then(res => {
+      if (res.data.success === true) {
+        this.getBV();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  updateCandidat = ({id, commune, prenom, profession, owner, observation, ordre, nom, dossier, sexe, date, statut, lieu}) => {
     console.log("d", id)
     new StaticService().updateCandidat({
       id,
@@ -499,6 +577,8 @@ class Global extends React.Component {
     this.getUsers();
     this.getDemandeur();
     this.getListe();
+    this.getElecteurs();
+    this.getBV();
   }
 
 
@@ -511,13 +591,16 @@ class Global extends React.Component {
           createCommune: this.createCommune,
           createCandidat: this.createCandidat,
           createListe: this.createListe,
+          createBV: this.createBV,
           chargerDemandeur: this.createDemandeur,
           getRegion: this.getRegion,
           getDepartement: this.getDepartement,
           getCommune: this.getCommune,
           getCandidat: this.getCandidat,
           getUsers: this.getUsers,
+          getElecteurs: this.getElecteurs,
           getDemandeur: this.getDemandeur,
+          getBV: this.getBV,
           deleteRegion: this.deleteRegion,
           deleteDepartement: this.deleteDepartement,
           deleteCommune: this.deleteCommune,
@@ -525,15 +608,20 @@ class Global extends React.Component {
           deleteDemandeur: this.deleteDemandeur,
           deleteUser: this.deleteUser,
           deleteListe: this.deleteListe,
+          deleteBV: this.deleteBV,
           updateRegion: this.updateRegion,
           updateDepartement: this.updateDepartement,
           updateCommune: this.updateCommune,
           updateCandidat: this.updateCandidat,
           updateListe: this.updateListe,
           updateUser: this.updateUser,
+          updateBV: this.updateBV,
           addUser: this.signup,
+          signUp: this.signUpE,
           login: this.signin,
+          signIn: this.signInE,
           logout: this.logout,
+          logoutE: this.logoutE,
           readUploadFile: this.readUploadFile,
           uploadFile: this.onSelectFile,
           state: this.state

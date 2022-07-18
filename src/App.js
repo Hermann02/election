@@ -1,6 +1,7 @@
-import React, { Component, Suspense } from 'react'
+import React, {Component, Suspense} from 'react'
 import {HashRouter, Route, Routes, useNavigate} from 'react-router-dom'
 import './scss/style.scss'
+import LoginE from "./views/pages/login/LoginE";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -20,7 +21,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'));
 class App extends Component {
 
   state = {
-    isAuthenticate : false,
+    isAuthenticate: false,
   };
 
   componentDidMount() {
@@ -32,11 +33,12 @@ class App extends Component {
       <HashRouter>
         <Suspense fallback={loading}>
           <Routes>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/register" name="Register Page" element={<Register />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route path="*" name="Home" element={<DefaultLayout />} />
+            <Route exact path="/login" name="Login Page" element={<Login/>}/>
+            <Route exact path="/electeur/login" name="Login Page" element={<LoginE/>}/>
+            <Route exact path="/register" name="Register Page" element={<Register/>}/>
+            <Route exact path="/404" name="Page 404" element={<Page404/>}/>
+            <Route exact path="/500" name="Page 500" element={<Page500/>}/>
+            <Route path="*" name="Home" element={<DefaultLayout/>}/>
           </Routes>
         </Suspense>
       </HashRouter>

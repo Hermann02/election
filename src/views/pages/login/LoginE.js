@@ -18,9 +18,9 @@ import {cilLockLocked, cilUser} from '@coreui/icons'
 import {GlobalContext} from "../../../services/Global";
 import useToken from "../../../utils/UseToken";
 
-const Login = () => {
+const LoginE = () => {
   const context = useContext(GlobalContext);
-  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const {token, setToken} = useToken();
@@ -40,7 +40,7 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser}/>
                       </CInputGroupText>
-                      <CFormInput placeholder="Email" autoComplete="email" onChange={e => setEmail(e.target.value)}/>
+                      <CFormInput placeholder="Code" onChange={e => setCode(e.target.value)}/>
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -56,7 +56,7 @@ const Login = () => {
                     <CRow>
                       <CCol xs={6}>
                         <CButton color="primary" className="px-4" onClick={(e) => {
-                          context.login({email, password}).then(res => {
+                          context.signIn({code, password}).then(res => {
                             if (res.data.success) {
                               console.log(res.data);
                               setToken(res.data.data);
@@ -71,9 +71,8 @@ const Login = () => {
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0"
-                                 onClick={() => navigate('/electeur/login', {replace: true})}>
-                          Espace electeur
+                        <CButton color="link" className="px-0" onClick={() => navigate('/register', {replace: true})}>
+                          s'inscrire
                         </CButton>
                       </CCol>
                     </CRow>
@@ -90,4 +89,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default LoginE
