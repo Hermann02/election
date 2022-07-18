@@ -56,7 +56,7 @@ class Global extends React.Component {
   };
 
   createListe = ({departement, token, nom, candidats, collegeType}) => {
-    console.log(nom, departement,candidats,collegeType);
+    console.log(nom, departement, candidats, collegeType);
     new StaticService().createListe({departement, token, nom, candidats, collegeType}).then(res => {
       if (res.data.success === true) {
         this.getListe();
@@ -83,6 +83,17 @@ class Global extends React.Component {
       lieu
     }).then(res => {
       if (res.data.success === true) {
+        let x = this.state.listes.filter(i => i.owner === res.data.data?.owner)[0];
+        console.log(x);
+        this.updateListe({
+          nom: x.nom,
+          owner: x.owner,
+          collegeType: x.collegeType,
+          departement: x.departement,
+          id: x._id,
+          candidats: this.state.candidats.length + 1,
+          status: x.status
+        })
         this.getCandidat();
       }
     }, err => {
@@ -298,6 +309,17 @@ class Global extends React.Component {
     });
   };
 
+
+  deleteListe = (id) => {
+    new StaticService().deleteListe(id).then(res => {
+      if (res.data.success === true) {
+        this.getListe();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
   deleteCandiat = (id) => {
     new StaticService().deleteCandiat(id).then(res => {
       if (res.data.success === true) {
@@ -391,6 +413,16 @@ class Global extends React.Component {
     });
   };
 
+  updateListe = ({departement, owner, nom, id, status, candidats, collegeType}) => {
+    new StaticService().updateListe({departement, nom, owner, id, status, candidats, collegeType}).then(res => {
+      if (res.data.success === true) {
+        this.getListe();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
 
   updateUser = ({id, nom, prenom, email, phone, departement, userType}) => {
     new StaticService().updateUser({id, nom, prenom, email, phone, departement, userType}).then(res => {
@@ -402,7 +434,7 @@ class Global extends React.Component {
     });
   };
 
-  updateCandidat = ({id, commune, prenom, profession, ordre, nom, dossier, sexe, date, statut, lieu}) => {
+  updateCandidat = ({id, commune, prenom, profession, owner,observation,ordre, nom, dossier, sexe, date, statut, lieu}) => {
     console.log("d", id)
     new StaticService().updateCandidat({
       id,
@@ -411,6 +443,8 @@ class Global extends React.Component {
       profession,
       ordre,
       nom,
+      observation,
+      owner,
       dossier,
       sexe,
       date,
@@ -490,6 +524,7 @@ class Global extends React.Component {
           deleteCandidat: this.deleteCandiat,
           deleteDemandeur: this.deleteDemandeur,
           deleteUser: this.deleteUser,
+          deleteListe: this.deleteListe,
           updateRegion: this.updateRegion,
           updateDepartement: this.updateDepartement,
           updateCommune: this.updateCommune,

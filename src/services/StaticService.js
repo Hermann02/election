@@ -66,8 +66,8 @@ export default class StaticService extends DataService {
     return this.post('/communes/' + id + '/update', {departement, nom});
   }
 
-  updateListe({departement, nom, id, status, candidats}) {
-    return this.post('/listes/' + id + '/update', {departement, nom, status, candidats});
+  updateListe({departement, nom, id, status, owner,candidats,collegeType}) {
+    return this.post('/listes/' + id + '/update', {departement,owner,collegeType, nom, status, candidats});
   }
 
   updateUser({nom, prenom, email, phone, departement, userType, id}) {
@@ -81,10 +81,12 @@ export default class StaticService extends DataService {
     });
   }
 
-  updateCandidat({commune, prenom, profession, ordre, nom, dossier, sexe, date, lieu, statut, id}) {
+  updateCandidat({commune, prenom,owner,observation, profession, ordre, nom, dossier, sexe, date, lieu, statut, id}) {
     return this.post('/candidats/' + id + '/update', {
       commune,
       prenom,
+      owner,
+      observation,
       profession,
       ordre,
       nom,
@@ -143,6 +145,10 @@ export default class StaticService extends DataService {
 
   deleteUser(id) {
     return this.get('/users/' + id + '/delete', {})
+  }
+
+  deleteListe(id) {
+    return this.get('/listes/' + id + '/delete', {})
   }
 
 

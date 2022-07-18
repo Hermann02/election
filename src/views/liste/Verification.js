@@ -10,7 +10,8 @@ import {
   CFormInput,
   CFormLabel, CFormSelect,
   CInputGroup, CInputGroupText,
-  CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow,
+  CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow,CFormTextarea,
+  CModal, CModalBody, CModalContent, CModalDialog, CModalFooter, CModalHeader, CModalTitle
 } from '@coreui/react'
 import {GlobalContext} from "../../services/Global";
 import {CSmartTable} from "@coreui/react-pro";
@@ -22,7 +23,13 @@ import {cilFolderOpen} from "@coreui/icons";
 
 const Verification = props => {
   const [validated, setValidated] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [data, setData] = useState(null);
   const [nom, setNom] = useState('');
+  const [observation, setObservation] = useState('');
   const [owner, setOwner] = useState('');
   const [departement, setDepartement] = useState('');
   const [region, setRegion] = useState('');
@@ -33,6 +40,7 @@ const Verification = props => {
   const {token, setToken} = useToken();
   const navigate = useNavigate();
   const {state} = useLocation();
+
   const handleSubmit = (event) => {
     let x = context.state.candidats.filter(i => i.owner === token.user._id);
     console.log(x, "d")
@@ -44,6 +52,7 @@ const Verification = props => {
     }
     setValidated(true)
   };
+
   const handleUpdate = (item) => {
     setUpdate(true);
     setNom(item.nom);
@@ -111,51 +120,127 @@ const Verification = props => {
       {
         context => {
           return (
-            <CRow>
-              <CCol>
+            <>
+              <CRow>
+                <CCol>
 
-                <CCard>
-                  <CCardHeader>
-                    <h3>LISTE {state.nom} {context.state.departements.filter(i=> i._id === state.departement)[0]?.nom}</h3>
-                  </CCardHeader>
-
-                  <CCardBody>
-                    <CSmartTable
-                      activePage={1}
-                      cleaner
-                      clickableRows
-                      columns={columns}
-                      columnFilter
-                      columnSorter
-                      items={context.state.candidats.filter(i => i.owner === state.owner)}
-                      itemsPerPageSelect
-                      itemsPerPage={5}
-                      pagination
-                      scopedColumns={{
-                        numero: (item) => (
-                          <td>
-                            {item.ordre}
-                          </td>
-                        ),
-                        actions: (item) => {
-                          return (
-                            <td className="py-2">
-                              <CIcon icon={cilFolderOpen} customClassName="nav-icon"
-                                     onClick={() => navigate('/candidat/verification', {state: item})}/>
+                  <CCard>
+                    <CCardHeader>
+                      <h3>LISTE {state.nom} {context.state.departements.filter(i => i._id === state.departement)[0]?.nom}</h3>
+                    </CCardHeader>
+                    <CCardBody>
+                      <CSmartTable
+                        activePage={1}
+                        cleaner
+                        clickableRows
+                        columns={columns}
+                        columnFilter
+                        columnSorter
+                        items={context.state.candidats.filter(i => i.owner === state.owner)}
+                        itemsPerPageSelect
+                        itemsPerPage={5}
+                        pagination
+                        scopedColumns={{
+                          numero: (item) => (
+                            <td>
+                              {item.ordre}
                             </td>
-                          )
-                        },
-                      }}
-                      tableFilter
-                      tableProps={{
-                        striped: true,
-                        hover: true,
-                      }}
-                    />
-                  </CCardBody>
-                </CCard>
-              </CCol>
-            </CRow>
+                          ),
+                          actions: (item) => {
+                            return (
+                              <td className="py-2">
+                                <CIcon icon={cilFolderOpen} customClassName=" modal-toggle nav-icon"
+                                       onClick={() => {
+                                         setData(item);
+                                         setOpen(true);
+                                       }}/>
+                              </td>
+                            )
+                          },
+                        }}
+                        tableFilter
+                        tableProps={{
+                          striped: true,
+                          hover: true,
+                        }}
+                      />
+
+                    </CCardBody>
+                  </CCard>
+                </CCol>
+              </CRow>
+
+              <CModal
+                visible={open}
+                onClose={handleClose}
+              >
+                <CModalDialog>
+                  <CModalContent>
+                    <CModalHeader>
+                      <CModalTitle>
+                        Candidat
+                      </CModalTitle>
+                    </CModalHeader>
+                    <CModalBody>
+                          <CRow>
+                            <CCol>
+                              <p>Nom : {data?.nom}</p>
+                              <p>Prenom : {data?.prenom}</p>
+                              <p>Sexe : {data?.sexe}</p>
+                              <p>Profession : {data?.profession}</p>
+                            </CCol>
+                            <CCol>
+                              <p>Commune : {context.state.communes.filter(i => i._id === data?.commune)[0]?.nom}</p>
+                              <p>Date de naissance : {data?.date}</p>
+                              <p>Lieu : {data?.lieu}</p>
+                              <p>Ordre sur la liste : {data?.ordre}</p>
+                            </CCol>
+                            <CCol>
+                              <CCol md={4}>
+                                <CFormLabel htmlFor="validationDefaultUsername">Observation</CFormLabel>
+                                <CInputGroup className="has-validation">
+                                  <CFormTextarea
+                                    type="text"
+                                    id="validationDefaultUsername"
+                                    defaultValue=""
+                                    aria-describedby="inputGroupPrepend02"
+                                    required
+                                    value={observation}
+                                    onChange={(e) => setObservation(e.target.value)}
+                                  />
+                                  <CFormFeedback invalid>Veuillez emettre une observation.</CFormFeedback>
+                                </CInputGroup>
+                              </CCol>
+
+                            </CCol>
+                          </CRow>
+
+                    </CModalBody>
+                    <CModalFooter>
+                      <CButton color="primary" type="submit" onClick={() => {
+                       context.updateCandidat({
+                          commune:data.commune,
+                          prenom:data.prenom,
+                          profession: data.profession,
+                          ordre: data.ordre,
+                          nom: data.nom,
+                          date: data.date,
+                          lieu: data.lieu,
+                          sexe: data.sexe,
+                          dossier: data.dossier,
+                          statut: data.statut,
+                          id: data.id,
+                         owner: data.owner,
+                         observation
+                        })
+                      }}>
+                        Modifier
+                      </CButton>
+                    </CModalFooter>
+                  </CModalContent>
+                </CModalDialog>
+              </CModal>
+            </>
           )
         }
       }

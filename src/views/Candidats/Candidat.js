@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   CButton,
   CCard,
@@ -15,11 +15,13 @@ import {
 import {GlobalContext} from "../../services/Global";
 import {CSmartTable} from "@coreui/react-pro";
 import useToken from "../../utils/UseToken";
+import {useNavigate} from "react-router-dom";
 
 
 const Candidat = () => {
   const [validated, setValidated] = useState(false);
   const [nom, setNom] = useState('');
+  const [owner, setOwner] = useState('');
   const [prenom, setPrenom] = useState('');
   const [profession, setProfession] = useState('');
   const [sexe, setSexe] = useState('');
@@ -36,6 +38,7 @@ const Candidat = () => {
   const [update, setUpdate] = useState(null);
   const context = useContext(GlobalContext);
   const {token, setToken} = useToken();
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -57,16 +60,27 @@ const Candidat = () => {
     setOrdre(item.ordre);
     setCommune(item.commune);
     setSexe(item.sexe);
+    setOwner(item.owner);
     setDossier(item.dossier);
   };
 
+
+  const exist = context.state.listes.filter(i=>i.owner === token.user._id);
+
+  console.log(token.user.id)
+  useEffect(() => {
+    if (exist.length === 0) {
+      console.log(exist)
+      navigate('/liste/creer',{replace:true});
+    }
+  }, [exist]);
 
   const columns = [
     {
       key: 'ordre',
       label: '#',
       filter: false,
-      sorter: false,
+      sorter: true,
       _style: {width: '1%'},
     },
     {
@@ -326,6 +340,7 @@ const Candidat = () => {
                             context.updateCandidat({
                               commune,
                               prenom,
+                              owner,
                               profession,
                               ordre,
                               nom,

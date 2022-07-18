@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   CButton,
   CCard,
@@ -15,6 +15,7 @@ import {
 import {GlobalContext} from "../../services/Global";
 import {CSmartTable} from "@coreui/react-pro";
 import useToken from "../../utils/UseToken";
+import {useNavigate} from "react-router-dom";
 
 
 const AjouterListe = () => {
@@ -23,14 +24,16 @@ const AjouterListe = () => {
   const [departement, setDepartement] = useState('');
   const [urls, setUrls] = useState('');
   const [collegeType, setcollegeType] = useState('');
+  const [owner, setOwner] = useState('');
   const [id, setId] = useState('');
-  const [candidats, setCandidats] = useState([]);
+  const [candidats, setCandidats] = useState(0);
   const [status, setStatus] = useState(false);
   const [update, setUpdate] = useState(null);
   const context = useContext(GlobalContext);
   const {token, setToken} = useToken();
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
-    let x = context.state.candidats.filter(i => i.owner === token.user._id);
+    let x = context.state.candidats.filter(i => i.owner === token.user._id).length;
     console.log(x, "d")
     setCandidats(x);
     const form = event.currentTarget;
@@ -44,11 +47,13 @@ const AjouterListe = () => {
     setUpdate(true);
     setNom(item.nom);
     setId(item.id);
+    setOwner(item.owner);
+    setDepartement(item.departement);
+    setCandidats(item.candidats);
     console.log(item);
     setStatus(item.status);
     setcollegeType(item.collegeType);
   };
-
 
   const columns = [
     {
@@ -94,6 +99,7 @@ const AjouterListe = () => {
       sorter: false,
     },
   ];
+
 
   return (
     <GlobalContext.Consumer>
@@ -171,9 +177,12 @@ const AjouterListe = () => {
                             setUpdate(false);
                             context.updateListe({
                               departement,
+                              owner,
                               nom,
                               status,
-                              id
+                              id,
+                              candidats,
+                              collegeType
                             })
                           }}>
                             Modifier
@@ -189,7 +198,6 @@ const AjouterListe = () => {
                       </CCol>
                     </CForm>
                   </CCardBody>
-
                   <CCardFooter>
                     <CSmartTable
                       activePage={1}
@@ -219,7 +227,7 @@ const AjouterListe = () => {
                               <CDropdown>
                                 <CDropdownToggle color="secondary">Actions</CDropdownToggle>
                                 <CDropdownMenu>
-                                  <CDropdownItem>Supprimer</CDropdownItem>
+                                  <CDropdownItem onClick={() => context.deleteListe(item.id)}>Supprimer</CDropdownItem>
                                   <CDropdownItem
                                     onClick={() => handleUpdate(item)}>Modifier</CDropdownItem>
                                 </CDropdownMenu>
