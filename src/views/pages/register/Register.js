@@ -119,9 +119,9 @@ const Register = () => {
                     />
                   </CInputGroup>
                   <div className="d-grid">
-                    <CButton color="success" onClick={() => {
+                    <CButton color="success" onClick={(e) => {
                       context.signUp({code, userType, departement, password, confirmedPassword}).then(res => {
-                        if (res?.data?.success) {
+                        if (res.data.success) {
                           console.log(res.data);
                           navigate('/electeur/login', {replace: false});
                         }

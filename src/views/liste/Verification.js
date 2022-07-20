@@ -11,7 +11,7 @@ import {
   CFormLabel, CFormSelect,
   CInputGroup, CInputGroupText,
   CRow, CTable, CTableBody, CTableDataCell, CTableHead, CTableHeaderCell, CTableRow, CFormTextarea,
-  CModal, CModalBody, CModalContent, CModalDialog, CModalFooter, CModalHeader, CModalTitle
+  CModal, CModalBody, CModalContent, CModalDialog, CModalFooter, CModalHeader, CModalTitle, CBadge
 } from '@coreui/react'
 import {GlobalContext} from "../../services/Global";
 import {CSmartTable} from "@coreui/react-pro";
@@ -19,6 +19,7 @@ import useToken from "../../utils/UseToken";
 import {useLocation, useNavigate} from "react-router";
 import CIcon from "@coreui/icons-react";
 import {cilFolderOpen} from "@coreui/icons";
+import Formatter from "../../utils/Formatter";
 
 
 const Verification = props => {
@@ -42,10 +43,20 @@ const Verification = props => {
   const navigate = useNavigate();
   const {state} = useLocation();
 
+
+  const getBadge = (status) => {
+    switch (status) {
+      case 'Acceptee':
+        return 'success'
+      case 'Refusee':
+        return 'danger'
+      default:
+        return 'warning'
+    }
+  }
   const handleSubmit = (event) => {
     let x = context.state.candidats.filter(i => i.owner === token.user._id);
     console.log(x, "d")
-    setCandidats(x);
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -108,6 +119,27 @@ const Verification = props => {
       _style: {width: '10%'},
     },
     {
+      key: 'statut',
+      label: 'Statut',
+      filter: false,
+      sorter: true,
+      _style: {width: '10%'},
+    },
+    {
+      key: 'createdAt',
+      label: 'Crée le',
+      filter: false,
+      sorter: false,
+      _style: {width: '10%'},
+    },
+    {
+      key: 'updatedAt',
+      label: 'Modifié le',
+      filter: false,
+      sorter: false,
+      _style: {width: '10%'},
+    },
+    {
       key: 'actions',
       label: '',
       _style: {width: '50%'},
@@ -147,14 +179,87 @@ const Verification = props => {
                               {item.ordre}
                             </td>
                           ),
+                          'date': (item) => (
+                            <td>{Formatter.date(item.date)}</td>
+                          ),
+                          'createdAt': (item) => (
+                            <td>{Formatter.date(item.createdAt)}</td>
+                          ),
+                          'updatedAt': (item) => (
+                            <td>{Formatter.date(item.updatedAt)}</td>
+                          ),
+                          'statut':
+                            (item) => (
+                              <td>
+                                <CBadge color={getBadge(item.statut)}>
+                                  {item.statut}
+                                </CBadge>
+                              </td>
+                            ),
                           actions: (item) => {
                             return (
                               <td className="py-2">
-                                <CIcon icon={cilFolderOpen} customClassName=" modal-toggle nav-icon"
-                                       onClick={() => {
-                                         handleUpdate(item);
-                                         setOpen(true);
-                                       }}/>
+                                {token.user.userType === 'CD' ?
+                                  <CDropdown>
+                                    <CDropdownToggle color="secondary">Actions</CDropdownToggle>
+                                    <CDropdownMenu>
+                                      <CDropdownItem
+                                        onClick={() => {
+                                          handleUpdate(item);
+                                          setOpen(true);
+                                        }}>Ouvrir
+                                      </CDropdownItem>
+                                    </CDropdownMenu>
+                                  </CDropdown>
+                                  :
+                                  <CDropdown>
+                                    <CDropdownToggle color="secondary">Actions</CDropdownToggle>
+                                    <CDropdownMenu>
+                                      <CDropdownItem
+                                        onClick={() => {
+                                          handleUpdate(item);
+                                          setOpen(true);
+                                        }}>Ouvrir
+                                      </CDropdownItem>
+                                      <CDropdownItem
+                                        onClick={() => {
+                                          context.updateCandidat({
+                                            commune: data.commune,
+                                            prenom: data.prenom,
+                                            profession: data.profession,
+                                            ordre: data.ordre,
+                                            nom: data.nom,
+                                            date: data.date,
+                                            lieu: data.lieu,
+                                            sexe: data.sexe,
+                                            dossier: data.dossier,
+                                            status: "Acceptee",
+                                            id: data.id,
+                                            owner: data.owner,
+                                            observation: data.observation
+                                          });
+                                        }}>Accepter</CDropdownItem>
+                                      <CDropdownItem
+                                        onClick={() => {
+                                          context.updateCandidat({
+                                            commune: data.commune,
+                                            prenom: data.prenom,
+                                            profession: data.profession,
+                                            ordre: data.ordre,
+                                            nom: data.nom,
+                                            date: data.date,
+                                            lieu: data.lieu,
+                                            sexe: data.sexe,
+                                            dossier: data.dossier,
+                                            status: "Rejetee",
+                                            id: data.id,
+                                            owner: data.owner,
+                                            observation: data.observation
+                                          });
+                                        }}>Refuser</CDropdownItem>
+                                    </CDropdownMenu>
+                                  </CDropdown>
+                                }
                               </td>
                             )
                           },
@@ -224,7 +329,7 @@ const Verification = props => {
 
                     </CModalBody>
                     <CModalFooter>
-                      {token.user.userType === 'CD' && data.observation?
+                      {token.user.userType === 'CD' && data?.observation ?
                         <CButton color="primary" type="submit" onClick={() => {
                           context.updateCandidat({
                             commune: data.commune,
@@ -247,54 +352,7 @@ const Verification = props => {
                           Valider
                         </CButton>
                         :
-                        <CRow>
-                          <CCol>
-                            <CButton color="success" type="submit" onClick={() => {
-                              context.updateCandidat({
-                                commune: data.commune,
-                                prenom: data.prenom,
-                                profession: data.profession,
-                                ordre: data.ordre,
-                                nom: data.nom,
-                                date: data.date,
-                                lieu: data.lieu,
-                                sexe: data.sexe,
-                                dossier: data.dossier,
-                                status: "Acceptee",
-                                id: data.id,
-                                owner: data.owner,
-                                observation: data.observation
-                              });
-                              handleClose()
-                            }
-                            }>
-                              Accepter
-                            </CButton>
-                          </CCol>
-                          <CCol>
-                            <CButton color="danger" type="submit" onClick={() => {
-                              context.updateCandidat({
-                                commune: data.commune,
-                                prenom: data.prenom,
-                                profession: data.profession,
-                                ordre: data.ordre,
-                                nom: data.nom,
-                                date: data.date,
-                                lieu: data.lieu,
-                                sexe: data.sexe,
-                                dossier: data.dossier,
-                                status: "Rejetee",
-                                id: data.id,
-                                owner: data.owner,
-                                observation: data.observation
-                              });
-                              handleClose()
-                            }
-                            }>
-                              Rejeter
-                            </CButton>
-                          </CCol>
-                        </CRow>
+                        <CButton onClick={() => handleClose()}>Fermer</CButton>
                       }
                     </CModalFooter>
                   </CModalContent>

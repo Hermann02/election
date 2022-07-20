@@ -1,5 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
+  CBadge,
   CButton,
   CCard,
   CCardBody, CCardFooter,
@@ -16,6 +17,7 @@ import {GlobalContext} from "../../services/Global";
 import {CSmartTable} from "@coreui/react-pro";
 import useToken from "../../utils/UseToken";
 import {useNavigate} from "react-router-dom";
+import Formatter from "../../utils/Formatter";
 
 
 const Candidat = () => {
@@ -65,13 +67,24 @@ const Candidat = () => {
   };
 
 
-  const exist = context.state.listes.filter(i=>i.owner === token.user._id);
+  const getBadge = (status) => {
+    switch (status) {
+      case 'Acceptee':
+        return 'success'
+      case 'Refusee':
+        return 'danger'
+      default:
+        return 'primary'
+    }
+  }
+
+  const exist = context.state.listes.filter(i => i.owner === token.user._id);
 
   console.log(token.user.id)
   useEffect(() => {
     if (exist.length === 0) {
       console.log(exist)
-      navigate('/liste/creer',{replace:true});
+      navigate('/liste/creer', {replace: true});
     }
   }, [exist]);
 
@@ -121,6 +134,20 @@ const Candidat = () => {
     {
       key: 'profession',
       label: 'profession',
+      filter: false,
+      sorter: false,
+      _style: {width: '50%'},
+    },
+    {
+      key: 'statut',
+      label: 'statut',
+      filter: false,
+      sorter: false,
+      _style: {width: '50%'},
+    },
+    {
+      key: 'createdAt',
+      label: 'crée le',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
@@ -391,6 +418,20 @@ const Candidat = () => {
                           <td>
                             {item.ordre}
                           </td>
+                        ),
+                        'statut':
+                          (item) => (
+                            <td>
+                              <CBadge color={getBadge(item.statut)}>
+                                {item.statut}
+                              </CBadge>
+                            </td>
+                          ),
+                        'createdAt': (item) => (
+                          <td>{Formatter.date(item.createdAt)}</td>
+                        ),
+                        'date': (item) => (
+                          <td>{Formatter.date(item.date)}</td>
                         ),
                         actions: (item) => {
                           return (

@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {
+  CBadge,
   CButton,
   CCard,
   CCardBody, CCardFooter,
@@ -18,6 +19,7 @@ import useToken from "../../utils/UseToken";
 import CIcon from '@coreui/icons-react'
 import {useNavigate} from "react-router-dom";
 import {cilFolderOpen, cilOpentype, cilSpeedometer} from "@coreui/icons";
+import Formatter from "../../utils/Formatter";
 
 
 const Liste = () => {
@@ -52,6 +54,17 @@ const Liste = () => {
   };
 
 
+  const getBadge = (status) => {
+    switch (status) {
+      case 'Acceptee':
+        return 'success'
+      case 'Refusee':
+        return 'danger'
+      default:
+        return 'warning'
+    }
+  }
+
   const columns = [
     {
       key: '_id',
@@ -62,21 +75,28 @@ const Liste = () => {
     },
     {
       key: 'nom',
-      label: 'nom',
+      label: 'Nom',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
     },
     {
       key: 'candidats',
-      label: 'candidats',
+      label: 'Candidats',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
     },
     {
-      key: 'departement',
-      label: 'departement',
+      key: 'createdAt',
+      label: 'Crée le',
+      filter: false,
+      sorter: false,
+      _style: {width: '50%'},
+    },
+    {
+      key: 'updatedAt',
+      label: 'Modifié le',
       filter: false,
       sorter: false,
       _style: {width: '50%'},
@@ -107,7 +127,7 @@ const Liste = () => {
 
                 <CCard>
                   <CCardHeader>
-                    <h3>listes de candidature</h3>
+                    <h3>Listes de candidature</h3>
                   </CCardHeader>
                   <CCardBody>
                     <CRow>
@@ -208,16 +228,71 @@ const Liste = () => {
                             {item._id + 1}
                           </td>
                         ),
-                        'candidats': (item) => (
+                        'createdAt': (item) => (
                           <td>
-                            {item.candidats.length}
+                            {Formatter.date(item.createdAt)}
                           </td>
                         ),
+                        'updatedAt': (item) => (
+                          <td>
+                            {Formatter.date(item.updatedAt)}
+                          </td>
+                        ),
+
+                        'status':
+                          (item) => (
+                            <td>
+                              <CBadge color={getBadge(item.status)}>
+                                {item.status}
+                              </CBadge>
+                            </td>
+                          ),
                         actions: (item) => {
                           return (
                             <td className="py-2">
-                              <CIcon icon={cilFolderOpen} customClassName="nav-icon"
-                                     onClick={() => navigate('/liste/verification', {state: item})}/>
+                              {token.user.userType === 'CD' ?
+                                <CDropdown>
+                                <CDropdownToggle color="secondary">Actions</CDropdownToggle>
+                                <CDropdownMenu>
+                                  <CDropdownItem onClick={() => navigate('/liste/verification', {state: item})}>
+                                    Ouvrir
+                                  </CDropdownItem>
+                                </CDropdownMenu>
+                              </CDropdown>
+                                :
+                                <CDropdown>
+                                <CDropdownToggle color="secondary">Actions</CDropdownToggle>
+                                <CDropdownMenu>
+                                  <CDropdownItem onClick={() => navigate('/liste/verification', {state: item})}>
+                                    Ouvrir
+                                  </CDropdownItem>
+                                  <CDropdownItem
+                                    onClick={() => {
+                                      context.updateListe({
+                                        candidats: data.candidats,
+                                        nom: data.nom,
+                                        status: "Acceptee",
+                                        id: data.id,
+                                        owner: data.owner,
+                                        collegeType: data.collegeType,
+                                        departement: data.departement,
+                                      });
+                                    }}>Accepter</CDropdownItem>
+                                  <CDropdownItem
+                                    onClick={() => {
+                                      context.updateListe({
+                                        status: "Rejetee",
+                                        candidats: data.candidats,
+                                        nom: data.nom,
+                                        id: data.id,
+                                        owner: data.owner,
+                                        collegeType: data.collegeType,
+                                        departement: data.departement,
+                                      });
+                                    }}>Refuser</CDropdownItem>
+                                </CDropdownMenu>
+                              </CDropdown>  }
+
                             </td>
                           )
                         },

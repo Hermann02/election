@@ -108,7 +108,6 @@ const AjouterListe = () => {
           return (
             <CRow>
               <CCol>
-
                 <CCard>
                   <CCardHeader>
                     <h3>Créer la liste</h3>
@@ -131,7 +130,7 @@ const AjouterListe = () => {
                             {/*  <option value={item._id}>{item.nom}</option>*/}
                             {/*)}*/}
 
-                          </CFormSelect>
+                    .      </CFormSelect>
                           <CFormFeedback tooltip invalid>
                             Veuillez selectionner le département.
                           </CFormFeedback>
@@ -172,7 +171,7 @@ const AjouterListe = () => {
                       </CRow>
 
                       <CCol xs={4}>{
-                        update ?
+                        update && context.state.listes.filter(i => i.owner === token.user._id).length === 0 ?
                           <CButton color="primary" type="submit" onClick={() => {
                             setUpdate(false);
                             context.updateListe({

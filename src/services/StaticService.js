@@ -166,6 +166,10 @@ export default class StaticService extends DataService {
     return this.get('/candidats/' + id + '/delete', {})
   }
 
+  deleteListe(id) {
+    return this.get('/listes/' + id + '/delete', {})
+  }
+
   deleteDemandeur(id) {
     return this.get('/demandeur/' + id + '/delete', {})
   }
