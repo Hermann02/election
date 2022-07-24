@@ -27,6 +27,10 @@ export default class StaticService extends DataService {
     });
   }
 
+  createVote({bureau, electeur, choix}) {
+    return this.post('/votes/create', {bureau, electeur, choix}, {});
+  }
+
   createListe({departement, token, nom, candidats, collegeType}) {
     return this.post('/listes/create', {departement, nom, candidats, collegeType}, {
       headers: {
@@ -35,8 +39,8 @@ export default class StaticService extends DataService {
     });
   }
 
-  createBV({nom, collegeType, listes, token, departement, electeurs,}) {
-    return this.post('/bureauVote/create', {nom, collegeType, listes, departement, electeurs,}, {
+  createBV({nom, collegeType, token, departement,}) {
+    return this.post('/bureauVote/create', {nom, collegeType, departement}, {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -74,8 +78,8 @@ export default class StaticService extends DataService {
     return this.post('/communes/' + id + '/update', {departement, nom});
   }
 
-  updateListe({departement, nom, id, status, owner, candidats, collegeType}) {
-    return this.post('/listes/' + id + '/update', {departement, owner, collegeType, nom, status, candidats});
+  updateListe({departement, nom, id, status, bureau, owner, candidats, collegeType}) {
+    return this.post('/listes/' + id + '/update', {departement, bureau, owner, collegeType, nom, status, candidats});
   }
 
   updateUser({nom, prenom, email, phone, departement, userType, id}) {
@@ -89,14 +93,12 @@ export default class StaticService extends DataService {
     });
   }
 
-  updateBV({nom, collegeType, owner, listes, departement, electeurs, id}) {
+  updateBV({nom, collegeType, owner, departement, id}) {
     return this.post('/bureauVote/' + id + '/update', {
       nom,
       collegeType,
       owner,
-      listes,
       departement,
-      electeurs,
     });
   }
 
@@ -135,6 +137,14 @@ export default class StaticService extends DataService {
 
   getDemandeur() {
     return this.get('/demandeur/list', {})
+  }
+
+  getVote() {
+    return this.get('/votes/list', {})
+  }
+
+  getVotes(id) {
+    return this.get('/vote/' + id + 'list', {})
   }
 
   getListe() {
@@ -209,8 +219,8 @@ export default class StaticService extends DataService {
     })
   }
 
-  signUpE({code, userType, confirmedPassword, departement, password}) {
-    return this.post('/electeurs/signup', {code, userType, departement, confirmedPassword, password}, {})
+  signUpE({code, userType, confirmedPassword, bureau, departement, password}) {
+    return this.post('/electeurs/signup', {code, bureau, userType, departement, confirmedPassword, password}, {})
   }
 
   signInE({code, password}) {

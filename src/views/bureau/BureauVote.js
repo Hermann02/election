@@ -24,8 +24,6 @@ const BureauVote = () => {
   const [id, setId] = useState('');
   const [nom, setNom] = useState('');
   const [departement, setDepartement] = useState('');
-  const [listes, setListes] = useState([]);
-  const [electeurs, setElecteurs] = useState([]);
   const [owner, setOwner] = useState('');
   const [college, setCollege] = useState('');
   const {token, setToken} = useToken();
@@ -34,8 +32,6 @@ const BureauVote = () => {
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
-    setListes(context.state.listes.filter(i => i.departement === departement && i.collegeType === college && i.status === "accepetee"));
-    setElecteurs(context.state.electeurs.filter(i => i.departement === departement && i.userType === college));
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation()
@@ -79,14 +75,12 @@ const BureauVote = () => {
       _style: {width: '50%'},
     },
     {
-      key: 'electeurs',
       label: 'electeurs',
       filter: false,
       sorter: false,
       _style: {width: '10%'},
     },
     {
-      key: 'listes',
       label: 'listes',
       filter: false,
       sorter: false,
@@ -165,8 +159,6 @@ const BureauVote = () => {
                       <CCol xs={12}>
                         <CButton color="primary" type="submit" onClick={() => context.createBV({
                           token: token.token,
-                          listes,
-                          electeurs,
                           collegeType: college,
                           nom,
                           departement
@@ -174,7 +166,6 @@ const BureauVote = () => {
                           Ajouter
                         </CButton>
                       </CCol>
-
                     </CForm>
                   </CCardBody>
                   <CCardFooter>
@@ -213,20 +204,20 @@ const BureauVote = () => {
                             </td>
                           )
                         },
-                        electeurs: (item) => {
-                          return (
-                            <td className="py-2">
-                              {item.electeurs.length}
-                            </td>
-                          )
-                        },
-                        listes: (item) => {
-                          return (
-                            <td className="py-2">
-                              {item.listes.length}
-                            </td>
-                          )
-                        },
+                        // 'electeurs': (item) => {
+                        //   return (
+                        //     <td className="py-2">
+                        //       {context.state.electeurs.filter(i => i.bureau === item.id).length}
+                        //     </td>
+                        //   )
+                        // },
+                        // 'listes': (item) => {
+                        //   return (
+                        //     <td className="py-2">
+                        //       {context.state.listes.filter(i => i.bureau === item.id).length}
+                        //     </td>
+                        //   )
+                        // },
                       }}
                       tableFilter
                       tableProps={{

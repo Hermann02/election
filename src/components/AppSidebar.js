@@ -40,22 +40,9 @@ const AppSidebar = () => {
             icon: <CIcon icon={cilList} customClassName="nav-icon"/>,
           },
           {
-            component: CNavGroup,
-            name: 'Gestion des electeurs',
-            icon: <CIcon icon={cilPuzzle} customClassName="nav-icon"/>,
-            items: [
-              {
                 component: CNavItem,
                 name: 'Electeurs',
                 to: '/electeur',
-              },
-              {
-                component: CNavItem,
-                name: 'Demandeur',
-                to: '/demandeur',
-              },
-
-            ],
           },
 
           {
@@ -135,6 +122,17 @@ const AppSidebar = () => {
           },
         ];
         break;
+      default :
+          routes = [
+            {
+              component: CNavItem,
+              name: 'Vote',
+              to: '/electeur/vote',
+              icon: <CIcon icon={cilPeople} customClassName="nav-icon"/>,
+            },
+
+          ];
+          break;
     }
   }
   console.log(routes, 'nav');
@@ -148,10 +146,10 @@ const AppSidebar = () => {
           dispatch({type: 'set', sidebarShow: visible})
         }}
       >
-        <CSidebarBrand className="d-none d-md-flex" to="/">
-          <CIcon className="sidebar-brand-full" icon={logoNegative} height={35}/>
-          <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35}/>
-        </CSidebarBrand>
+        {/*<CSidebarBrand className="d-none d-md-flex" to="/">*/}
+        {/*  <CIcon className="sidebar-brand-full" icon={logoNegative} height={35}/>*/}
+        {/*  <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35}/>*/}
+        {/*</CSidebarBrand>*/}
         <CSidebarNav>
           <SimpleBar>
             <AppSidebarNav items={routes}/>

@@ -35,7 +35,8 @@ const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
-        <CAvatar src={avatar8} size="md"/>
+        <CIcon icon={cilUser} />
+        {token.user.userType === 'CD' ? 'Chef Departement' : token.user.userType === 'MD' ? 'Mandataire' : token.user.userType === 'AD' ? 'Administrateur' : token.user.userType === 'CE' ? 'Conseiller Electoral'  : 'Electeur'}
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         {/*<CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>*/}

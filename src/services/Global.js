@@ -19,6 +19,7 @@ class Global extends React.Component {
     user: [],
     json: [],
     listes: [],
+    votes: [],
     _id: "",
   };
 
@@ -57,9 +58,19 @@ class Global extends React.Component {
     });
   };
 
-  createBV = ({nom, collegeType, listes, token, departement, electeurs}) => {
+  createVote = ({bureau, electeur, choix}) => {
+    new StaticService().createVote({bureau, electeur, choix}).then(res => {
+      if (res.data.success === true) {
+        this.getVotes();
+      }
+    }, err => {
+      console.error(err);
+    });
+  };
+
+  createBV = ({nom, collegeType, token, departement,}) => {
     console.log();
-    new StaticService().createBV({nom, collegeType, listes, token, departement, electeurs}).then(res => {
+    new StaticService().createBV({nom, collegeType, token, departement}).then(res => {
       if (res.data.success === true) {
         this.getBV();
       }
@@ -289,6 +300,17 @@ class Global extends React.Component {
       this.setState({users: []});
     });
   };
+  getVotes = () => {
+    new StaticService().getVote().then(res => {
+      console.log("votes", res.data);
+      if (res.data.success === true) {
+        this.setState({votes: res.data.data});
+      }
+    }, err => {
+      console.error(err);
+      this.setState({votes: []});
+    });
+  };
 
 
   getBV = () => {
@@ -421,9 +443,9 @@ class Global extends React.Component {
   };
 
 
-  signUpE = ({code, userType, confirmedPassword, password, departement}) => {
+  signUpE = ({code, userType, bureau, confirmedPassword, password, departement}) => {
     if (this.state.demandeurs.filter(i => i.code === code && i.status === false)) {
-      return new StaticService().signUpE({code, userType, confirmedPassword, departement, password});
+      return new StaticService().signUpE({code, bureau, userType, confirmedPassword, departement, password});
     } else {
       console.log("erreur")
     }
@@ -480,8 +502,8 @@ class Global extends React.Component {
     });
   };
 
-  updateListe = ({departement, owner, nom, id, status, candidats, collegeType}) => {
-    new StaticService().updateListe({departement, nom, owner, id, status, candidats, collegeType}).then(res => {
+  updateListe = ({departement, owner, bureau, nom, id, status, candidats, collegeType}) => {
+    new StaticService().updateListe({departement, nom, bureau, owner, id, status, candidats, collegeType}).then(res => {
       if (res.data.success === true) {
         this.getListe();
       }
@@ -502,8 +524,8 @@ class Global extends React.Component {
   };
 
 
-  updateBV = ({nom, collegeType, owner, listes, departement, electeurs, id}) => {
-    new StaticService().updateBV({nom, collegeType, owner, listes, departement, electeurs, id}).then(res => {
+  updateBV = ({nom, collegeType, owner, departement, id}) => {
+    new StaticService().updateBV({nom, collegeType, owner, departement, id}).then(res => {
       if (res.data.success === true) {
         this.getBV();
       }
@@ -576,6 +598,7 @@ class Global extends React.Component {
     this.getCandidat();
     this.getUsers();
     this.getDemandeur();
+    this.getVotes();
     this.getListe();
     this.getElecteurs();
     this.getBV();
@@ -622,6 +645,7 @@ class Global extends React.Component {
           signIn: this.signInE,
           logout: this.logout,
           logoutE: this.logoutE,
+          vote: this.createVote,
           readUploadFile: this.readUploadFile,
           uploadFile: this.onSelectFile,
           state: this.state

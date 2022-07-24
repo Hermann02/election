@@ -269,25 +269,25 @@ const Liste = () => {
                                   <CDropdownItem
                                     onClick={() => {
                                       context.updateListe({
-                                        candidats: data.candidats,
-                                        nom: data.nom,
+                                        nom: item.nom,
                                         status: "Acceptee",
-                                        id: data.id,
-                                        owner: data.owner,
-                                        collegeType: data.collegeType,
-                                        departement: data.departement,
+                                        id: item.id,
+                                        bureau: context.state.bureaux.filter(i=> i.departement === item.departement && i.collegeType === item.collegeType)[0]?.id,
+                                        owner: item.owner,
+                                        collegeType: item.collegeType,
+                                        departement: item.departement,
                                       });
                                     }}>Accepter</CDropdownItem>
                                   <CDropdownItem
                                     onClick={() => {
                                       context.updateListe({
                                         status: "Rejetee",
-                                        candidats: data.candidats,
-                                        nom: data.nom,
-                                        id: data.id,
-                                        owner: data.owner,
-                                        collegeType: data.collegeType,
-                                        departement: data.departement,
+                                        candidats: item.candidats,
+                                        nom: item.nom,
+                                        id: item.id,
+                                        owner: item.owner,
+                                        collegeType: item.collegeType,
+                                        departement: item.departement,
                                       });
                                     }}>Refuser</CDropdownItem>
                                 </CDropdownMenu>

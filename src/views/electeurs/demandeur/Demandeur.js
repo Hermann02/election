@@ -237,19 +237,19 @@ const Demandeur = () => {
                                 {item.sexe === 'M' ? 'masculin' : 'feminin'}
                             </td>
                           ),
-                        actions: (item) => {
-                          return (
-                            <td className="py-2">
-                              <CDropdown>
-                                <CDropdownToggle color="secondary">Actions</CDropdownToggle>
-                                <CDropdownMenu>
-                                  <CDropdownItem>Supprimer</CDropdownItem>
-                                  <CDropdownItem>Modifier</CDropdownItem>
-                                </CDropdownMenu>
-                              </CDropdown>
-                            </td>
-                          )
-                        },
+                        // actions: (item) => {
+                        //   return (
+                        //     <td className="py-2">
+                        //       <CDropdown>
+                        //         <CDropdownToggle color="secondary">Actions</CDropdownToggle>
+                        //         <CDropdownMenu>
+                        //           <CDropdownItem>Supprimer</CDropdownItem>
+                        //           <CDropdownItem>Modifier</CDropdownItem>
+                        //         </CDropdownMenu>
+                        //       </CDropdown>
+                        //     </td>
+                        //   )
+                        // },
                       }}
                       tableFilter
                       tableProps={{

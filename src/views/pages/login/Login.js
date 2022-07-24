@@ -34,7 +34,7 @@ const Login = () => {
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
-                    <h1>Connection</h1>
+                    <h1>Connexion</h1>
                     <p className="text-medium-emphasis">Connectez-vous à votre compte</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>

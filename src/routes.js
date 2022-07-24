@@ -8,6 +8,7 @@ import AjouterListe from "./views/Candidats/AjouterListe";
 import Liste from "./views/liste/Liste";
 import Verification from "./views/liste/Verification";
 import CandidatVerification from "./views/liste/Validation";
+import Vote from "./views/vote/Vote";
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
 const Lieux = React.lazy(() => import('./views/lieux/Lieux'));
@@ -73,6 +74,7 @@ const routes = [
   { path: '/listes', name: 'Liste des candidats', element: Liste },
   { path: '/liste/verification', name: 'Liste des candidats', element: Verification },
   { path: '/candidat/verification', name: 'verification', element: CandidatVerification },
+  { path: '/electeur/vote', name: 'vote', element: Vote },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
